@@ -1,0 +1,11 @@
+name = "PDEMethods"
+uuid = "1026236b-b80b-41ad-9eb7-8dd92a38592b"
+authors = ["Jared Frazier <cscidev001@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
