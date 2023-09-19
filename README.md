@@ -15,3 +15,6 @@ Industrial and Applied Mathematics, 2022
 [3] Georgoulis, M. (2009). Computational Methods for Partial Differential 
 Equations. url: http://users.math.uoc.gr/~tsogka/Courses/AESDE-spring2015/Biblio/Georgoulis\_notes\_new.pdf
 
+[4] Pawar S, San O. CFD Julia: A Learning Module Structuring an Introductory 
+Course on Computational Fluid Dynamics. Fluids. 2019; 4(3):159. 
+https://doi.org/10.3390/fluids4030159 
