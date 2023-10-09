@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "c5194c28a05da7d67b186c3eb8f6d4981c09e942"
+project_hash = "abcf64f9daff691859f9c2a59713839029cca925"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "f2b16fe1a3491b295105cae080c2a5f77a842718"
@@ -511,6 +511,12 @@ git-tree-sha1 = "9e1a5e9f3b81ad6a5c613d181664a0efc6fe6dd7"
 uuid = "d5909c97-4eac-4ecc-a3dc-fdd0858a4120"
 version = "0.4.0"
 
+[[deps.HCubature]]
+deps = ["Combinatorics", "DataStructures", "LinearAlgebra", "QuadGK", "StaticArrays"]
+git-tree-sha1 = "e95b36755023def6ebc3d269e6483efa8b2f7f65"
+uuid = "19dc6840-f33b-545b-b366-655c7e3ffd49"
+version = "1.5.1"
+
 [[deps.HostCPUFeatures]]
 deps = ["BitTwiddlingConvenienceFunctions", "IfElse", "Libdl", "Static"]
 git-tree-sha1 = "eb8fed28f4994600e29beef49744639d985a04b2"
@@ -543,6 +549,23 @@ version = "0.1.3"
 git-tree-sha1 = "b8ffb903da9f7b8cf695a8bead8e01814aa24b30"
 uuid = "18e54dd8-cb9d-406c-a71d-865a43cbb235"
 version = "0.1.2"
+
+[[deps.Integrals]]
+deps = ["CommonSolve", "HCubature", "LinearAlgebra", "MonteCarloIntegration", "QuadGK", "Reexport", "Requires", "SciMLBase"]
+git-tree-sha1 = "44dd71130586e1776fde9041bd81f2e0db15db10"
+uuid = "de52edbc-65ea-441a-8357-d3a637375a31"
+version = "3.9.0"
+
+    [deps.Integrals.extensions]
+    IntegralsFastGaussQuadratureExt = "FastGaussQuadrature"
+    IntegralsForwardDiffExt = "ForwardDiff"
+    IntegralsZygoteExt = ["Zygote", "ChainRulesCore"]
+
+    [deps.Integrals.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+    FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+    ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+    Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
@@ -793,6 +816,12 @@ version = "8.68.0"
 
     [deps.ModelingToolkit.weakdeps]
     DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"
+
+[[deps.MonteCarloIntegration]]
+deps = ["Distributions", "Random"]
+git-tree-sha1 = "3f78ebce296c927d5c854e83cccdb5dcb1845629"
+uuid = "4886b29c-78c9-11e9-0a6e-41e1f4161f7b"
+version = "0.0.3"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"

@@ -18,3 +18,5 @@ Equations. url: http://users.math.uoc.gr/~tsogka/Courses/AESDE-spring2015/Biblio
 [4] Pawar S, San O. CFD Julia: A Learning Module Structuring an Introductory 
 Course on Computational Fluid Dynamics. Fluids. 2019; 4(3):159. 
 https://doi.org/10.3390/fluids4030159 
+
+[5] Simpson, G. (2017). Practical finite element modeling in Earth science using MATLAB. Wiley. 
