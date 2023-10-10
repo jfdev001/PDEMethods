@@ -2,7 +2,7 @@
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "abcf64f9daff691859f9c2a59713839029cca925"
+project_hash = "f2f7536355f62a8681418a4256b54938dcbc42d8"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "f2b16fe1a3491b295105cae080c2a5f77a842718"
@@ -402,6 +402,12 @@ version = "0.2.6"
 git-tree-sha1 = "acebe244d53ee1b461970f8910c235b259e772ef"
 uuid = "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
 version = "0.3.2"
+
+[[deps.FastGaussQuadrature]]
+deps = ["LinearAlgebra", "SpecialFunctions", "StaticArrays"]
+git-tree-sha1 = "0f478d8bad6f52573fb7658a263af61f3d96e43a"
+uuid = "442a2c76-b920-505d-bb47-c5924d526838"
+version = "0.5.1"
 
 [[deps.FastLapackInterface]]
 deps = ["LinearAlgebra"]
