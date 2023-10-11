@@ -27,6 +27,7 @@ explicit expression.
 [1] : https://en.wikipedia.org/wiki/Hermite_polynomials
 """
 function hermite(x, n)
+    @assert n >= 0
     polysum = 0
     upper_bound = Int(floor(n/2))
     for m = 0:upper_bound
