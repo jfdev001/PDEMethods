@@ -1,5 +1,6 @@
 module PDEMethods
 
-greet() = print("Hello World!")
+
+include("polynomials.jl")
 
 end # module PDEMethods
