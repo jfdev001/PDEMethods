@@ -1,3 +1,6 @@
+using FastGaussQuadrature: gausslegendre
+using LinearAlgebra: dot
+
 # roots of nth legendre polynomial
 # https://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_quadrature
 # ch. 4: "Practical Finite Element Modeling in Earth Science using Matlab"
@@ -18,7 +21,7 @@ const gauss_quadrature_weights::Vector{
 ]
 
 """
-    gausslegendrequad(f, n) 
+    mygausslegendrequad(f, n) 
 
 Gauss-Legendre quadrature of a function `f` for a number of sample points `n`
 where `n` also determines the `n^th` Legendre polynomial from which 
@@ -27,13 +30,13 @@ quadrature weights `wₖ` are determined.
 
 # Examples
 ```julia-repl
-julia> using PDEMethods: gausslegendrequad
+julia> using PDEMethods: mygausslegendrequad
 julia> f(ξ) = ((1 - ξ)/2)*((1 - ξ)/2)
-julia> gausslegendrequad(f, 2)
+julia> mygausslegendrequad(f, 2)
 0.6666666666666667
 ```
 """
-function gausslegendrequad(f, n)
+function mygausslegendrequad(f, n)
     @assert n >= 2
     n > 3 && throw("n > 3 not implemented")
     quadsum = 0
@@ -42,5 +45,18 @@ function gausslegendrequad(f, n)
         wₖ = gauss_quadrature_weights[n][k]
         quadsum += f(ξₖ)*wₖ
     end 
+    return quadsum
+end
+
+"""
+    gausslegendrequad(f, n)
+
+Return Gauss-Legendre quadrature of function `f` evaluated at `n` integration 
+points. See [`mygausslegendrequad`](@ref) for the naive for loop computation.
+"""
+function gausslegendrequad(f, n)
+    legendre_roots_x, weights = gausslegendre(n)
+    func_at_legendre_roots_x = f.(legendre_roots_x)
+    quadsum = dot(func_at_legendre_roots_x, weights) 
     return quadsum
 end 
