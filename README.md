@@ -58,3 +58,5 @@ Course on Computational Fluid Dynamics. Fluids. 2019; 4(3):159.
 https://doi.org/10.3390/fluids4030159 
 
 [5] Simpson, G. (2017). Practical finite element modeling in Earth science using MATLAB. Wiley. 
+
+[6] Darve, E., Wootters, M (2021). Numerical Linear Algebra with Julia. SIAM.
