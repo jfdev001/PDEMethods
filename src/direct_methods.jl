@@ -3,6 +3,8 @@
 # * LU (Gaussian Elimination)
 # * Cholesky Factorization
 
+using LinearAlgebra: UnitLowerTriangular, UpperTriangular
+
 """
     gaussian_elimination!(A)
 
@@ -16,22 +18,33 @@ entries of `A` are the upper triangular matrix `U`.
 """
 function gaussian_elimination!(A)
     m, n = size(A)
-    A_ = A
     for k = 1:n-1
-        A_[k, k] == 0 && break
+        A[k, k] == 0 && break
         for i = k+1:n
-            multiplier =  A_[i, k]/A_[k, k]
-            A_[i, k] = multiplier 
+            multiplier =  A[i, k]/A[k, k]
+            A[i, k] = multiplier 
         end 
 
         for j = k+1:n
             for i = k+1:n
-                submatrix_transform = A_[i, j] - A_[i, k]*A_[k, j] 
-                A_[i, j] = submatrix_transform 
+                submatrix_transform = A[i, j] - A[i, k]*A[k, j] 
+                A[i, j] = submatrix_transform 
             end
         end
     end
     return nothing
 end 
 
+"""
+    gaussian_elimination(A)
 
+Return `L` and `U` factorized matrices of `A` explicitly via OOP operation.
+"""
+function gaussian_elimination(A) 
+    A_ = copy(A)
+    gaussian_elimination!(A_)
+    # Explicitly cast to matrices to show zeros
+    L = Matrix(UnitLowerTriangular(A_))
+    U = Matrix(UpperTriangular(A_))
+    return L, U
+end
