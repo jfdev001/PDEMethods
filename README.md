@@ -60,3 +60,6 @@ https://doi.org/10.3390/fluids4030159
 [5] Simpson, G. (2017). Practical finite element modeling in Earth science using MATLAB. Wiley. 
 
 [6] Darve, E., Wootters, M (2021). Numerical Linear Algebra with Julia. SIAM.
+
+[7] Recktenwald, G.W. Finite-difference approximations to the heat equation. Mechanical 
+Engineering. 2004; 10(1).
