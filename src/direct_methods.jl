@@ -6,7 +6,7 @@
 using LinearAlgebra: UnitLowerTriangular, UpperTriangular, LowerTriangular
 
 """
-    gaussian_elimination!(A)
+    lu_factorization!(A)
 
 Return LU factorization of matrix `A` into lower triangular matrix `L` and upper 
 triangular matrix `U`. If `inplace = true`, then the subdiagonal entries
@@ -16,7 +16,7 @@ entries of `A` are the upper triangular matrix `U`.
 # References 
 [1] : Heath algorithm 2.3
 """
-function gaussian_elimination!(A)
+function lu_factorization!(A)
     m, n = size(A)
     for k = 1:n-1
         A[k, k] == 0 && break
@@ -36,13 +36,13 @@ function gaussian_elimination!(A)
 end 
 
 """
-    gaussian_elimination(A)
+    lu_factorization(A)
 
 Return `L` and `U` factorized matrices of `A` explicitly via OOP operation.
 """
-function gaussian_elimination(A) 
+function lu_factorization(A) 
     A_ = copy(A)
-    gaussian_elimination!(A_)
+    lu_factorization!(A_)
     # Explicitly cast to matrices to show zeros
     L = Matrix(UnitLowerTriangular(A_))
     U = Matrix(UpperTriangular(A_))
