@@ -3,7 +3,7 @@
 # * LU (Gaussian Elimination)
 # * Cholesky Factorization
 
-using LinearAlgebra: UnitLowerTriangular, UpperTriangular
+using LinearAlgebra: UnitLowerTriangular, UpperTriangular, LowerTriangular
 
 """
     gaussian_elimination!(A)
@@ -47,4 +47,50 @@ function gaussian_elimination(A)
     L = Matrix(UnitLowerTriangular(A_))
     U = Matrix(UpperTriangular(A_))
     return L, U
+end
+
+"""
+    cholesky_factorization!(A)
+
+Return `L` such that `A = L*transpose(L)` where `L` is lower triangular
+but does not, in general, have a unit diagonal.
+
+# References
+[1] : Heath Algorithm 2.7
+"""
+function cholesky_factorization!(A)
+    m, n = size(A)
+    for k = 1:n
+        A[k, k] = sqrt(A[k, k])
+        for i = k+1:n
+            A[i, k] = A[i, k]/A[k, k]
+        end 
+
+        for j = k+1:n
+            for i = j:n
+                A[i, j] = A[i, j] - A[i, k]*A[j, k]
+            end
+        end
+    end
+    
+    # (inefficient) set superdiagonal entries to 0
+    for j = 2:n
+        for i = 1:m
+            if i < j
+                A[i, j] = 0.0
+            end
+        end
+    end 
+    return nothing
+end
+
+"""
+    cholesky_factorization(A)
+
+Return `L` from OOP cholesky factorization.
+"""
+function cholesky_factorization(A) 
+    L = copy(A)
+    cholesky_factorization!(L)
+    return L
 end
