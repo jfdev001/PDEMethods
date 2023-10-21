@@ -25,9 +25,15 @@ end
 \\end{equation}
 ```
 
-Return the finite difference mesh, coefficient matrix `A` and the rhs vector 
+Return the finite difference `mesh`, coefficient matrix `A` and the rhs vector 
 `b` given Dirichlet boundary conditions for the left, right, top, and bottom 
-of the discretized Laplace equation
+of the discretized Laplace equation (i.e., 2D physical domain).
+
+NOTE: The strange indexing arises from the fact that i is a row index for
+
+
+# References
+[1] : Example 11.5 from Heath pg. 461
 """
 function laplace_eq_init_arrays(grid_dim_n::Int, lbc, rbc, tbc, bbc)
     # initialize mesh and boundary conditions
@@ -38,49 +44,60 @@ function laplace_eq_init_arrays(grid_dim_n::Int, lbc, rbc, tbc, bbc)
     mesh[end, :] .= bbc # bottom boundary condition
 
     # initialize interior point matrices
-    n_finite_diff_coeffs = 4
     n_interior_points_in_one_direction = grid_dim_n - 2
     n_nodes = n_interior_points_in_one_direction^2
     A = zeros(
         n_nodes,
-        n_finite_diff_coeffs,)
-    b = zeros(n_interior_points_in_one_direction)
+        n_nodes,)
+    b = zeros(n_nodes)
 
     # from approximation at each interior point in mesh from finite difference
-    stencil = [(0, 0), (-1, 0), (1, 0), (0, 1)]
+    # (Δi, Δj, coefficient)
+    stencil = [(0, 0, 4), (1, 0, -1), (-1, 0, -1), (0, 1, -1), (0, -1, -1)]
 
-    # For each interior node of the mesh, build the corresponding
-    # row in the A matrix
-    for j = 2:grid_dim_n - 1
-        for i in 2:grid_dim_n - 1    
-            for (A_col_ix, (Δi, Δj)) in enumerate(stencil)
-                on_boundary = i+Δi in (1, grid_dim_n) || j+Δj in (1, grid_dim_n)
+    # Make the A matrix
+    A_row = 1 # flat row index for A matrix
+    boundary_node_domain = (0, n_interior_points_in_one_direction+1)
 
-                # determine coefficient for A matrix
-                if !on_boundary
-                    if Δi == 0 && Δj == 0
-                        A[i-1, A_col_ix] = 4.0
+    # for each interior node in the mesh, use the stencil Δi and Δj
+    # to determine if u_{i+Δi, j+Δj} is a boundary node... 
+    # if it's not, then compute a flat index for the column in which 
+    # the coefficient of u_{i+Δi, j+Δj} will be stored
+    for j = 1:n_interior_points_in_one_direction 
+        for i in 1:n_interior_points_in_one_direction
+            for (Δi, Δj, coeff) in stencil
+                on_boundary = i+Δi in boundary_node_domain || 
+                    j+Δj in boundary_node_domain
+                # A is u11, u21, u31 while interior grid is u11, u12, u13
+                # which is why flat index here uses j as row index for
+                # interior grid and i as column index
+                A_col = (j+Δj-1)*n_interior_points_in_one_direction + 
+                    i+Δi
+
+                # Update the A and b arrays using the flat index
+                if !on_boundary 
+                    A[A_row, A_col] = coeff
+                else
+                    # note: example 11.5 from Heath pg. 461 treats
+                    # treats i, j as x, y axticks on mathematical coordinates
+                    # left boundary
+                    if i+Δi == 0
+                        b[A_row] += lbc
+                    # right boundary
+                    elseif i+Δi == n_interior_points_in_one_direction+1
+                        b[A_row] += rbc
+                    # bottom boundary
+                    elseif j+Δj == 0
+                        b[A_row] += bbc
+                    # top boundary
                     else
-                        A[i-1, A_col_ix] = -1.0
+                        b[A_row] += tbc
                     end
-                end    
-            end
+                end
+            end 
+            A_row += 1 # update flat row index
         end
-    end    
+    end 
 
     return mesh, A, b
 end
-
-"""
-
-            for (Δi, Δj, coeff) in stencil
-                on_boundary = i+Δi in (1, grid_dim_n) || j+Δj in (1, grid_dim_n)
-                if on_boundary 
-                    potential_col_boundary = mesh[j, i+Δi]
-                    potential_row_boundary = mesh[j+Δj, i]
-                    boundary_sum = potential_row_boundary + potential_col_boundary
-                    b
-                end 
-            end 
-
-""" 
