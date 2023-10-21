@@ -29,8 +29,9 @@ Return the finite difference `mesh`, coefficient matrix `A` and the rhs vector
 `b` given Dirichlet boundary conditions for the left, right, top, and bottom 
 of the discretized Laplace equation (i.e., 2D physical domain).
 
-NOTE: The strange indexing arises from the fact that i is a row index for
-
+NOTE: The strange indexing arises from the fact that j is used to index
+rows while i is used to index columns in the physical domain (see fig 11.7 [1]),
+while j is used to index columns and i is used to index rows in the matrix code.
 
 # References
 [1] : Example 11.5 from Heath pg. 461
@@ -68,9 +69,7 @@ function laplace_eq_init_arrays(grid_dim_n::Int, lbc, rbc, tbc, bbc)
             for (Δi, Δj, coeff) in stencil
                 on_boundary = i+Δi in boundary_node_domain || 
                     j+Δj in boundary_node_domain
-                # A is u11, u21, u31 while interior grid is u11, u12, u13
-                # which is why flat index here uses j as row index for
-                # interior grid and i as column index
+                # see note of doc for this justification
                 A_col = (j+Δj-1)*n_interior_points_in_one_direction + 
                     i+Δi
 
@@ -80,6 +79,7 @@ function laplace_eq_init_arrays(grid_dim_n::Int, lbc, rbc, tbc, bbc)
                 else
                     # note: example 11.5 from Heath pg. 461 treats
                     # treats i, j as x, y axticks on mathematical coordinates
+                    # @show (A_row, i, j, i+Δi, j+Δj)
                     # left boundary
                     if i+Δi == 0
                         b[A_row] += lbc
