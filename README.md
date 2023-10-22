@@ -105,8 +105,7 @@ Since such a problem is an IVP and BVP, we have sufficient information to comput
 [1] Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
 Boston: McGraw-Hill. ISBN: 0072399104
 
-[2] Chapters 11, 12, and 13 from Tobin A. Driscoll, Richard J. Braun.
-Fundamentals of Numerical Computation: Julia Edition. SIAM-Society for
+[2] Tobin A. Driscoll, Richard J. Braun. Fundamentals of Numerical Computation: Julia Edition. SIAM-Society for
 Industrial and Applied Mathematics, 2022. url: https://tobydriscoll.net/fnc-julia/frontmatter.html
 
 [3] Georgoulis, M. (2009). Computational Methods for Partial Differential
@@ -122,3 +121,5 @@ https://doi.org/10.3390/fluids4030159
 
 [7] Recktenwald, G.W. Finite-difference approximations to the heat equation. Mechanical
 Engineering. 2004; 10(1).
+
+[8] Whiteley, J. (2017). Finite Element Methods: A Practical Guide. Springer.
