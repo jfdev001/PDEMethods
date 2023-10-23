@@ -60,3 +60,14 @@ function gausslegendrequad(f, n)
     quadsum = dot(func_at_legendre_roots_x, weights) 
     return quadsum
 end 
+
+"""
+    gausslegendrequad_lagrange(xs, ys)
+
+This will probably only apply in 2D for quadrilateral elements due to 
+presence of xs AND ys (i.e., physical coordinates of mesh).
+"""
+function gausslegendrequad_lagrange(xs, ys, Lx, Ly)
+    # Map xs and ys to expected domain of [-1, 1] X [-1, 1]
+    throw("notimplemented")
+end 
