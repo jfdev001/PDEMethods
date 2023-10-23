@@ -64,10 +64,40 @@ end
 """
     gausslegendrequad_lagrange(xs, ys)
 
-This will probably only apply in 2D for quadrilateral elements due to 
-presence of xs AND ys (i.e., physical coordinates of mesh).
+```math
+\\begin{aligned}
+x &= \\frac{b - a}{2}t + \\frac{a + b}{2} = && t \\in [-1, 1] \\
+\\end{aligned}
+```
+
+Return Gauss-Legendre quadrature of Lagrangian interpolating polynomials
+on 1D (?) domain with data points `xs` and `ys`.
+
+Uses a coordinate transformation to ensure that `xs` are in the required
+domain [-1, 1].
+
+# References 
+[1] : Simpson2017 eq. 4.7-4.9
 """
-function gausslegendrequad_lagrange(xs, ys, Lx, Ly)
-    # Map xs and ys to expected domain of [-1, 1] X [-1, 1]
-    throw("notimplemented")
+function gausslegendrequad_lagrange(xs, ys)
+    # Get x-domain bounds
+    a = xs[1]
+    b = xs[end]
+
+    # coordinate transformation (is this mutating?)
+    xs = (2/(b-a))*(xs .- ((a+b)/2)) 
+    
+    # compute quadrature points ξ and weights w for exact integration of 
+    # lagrange polynomial of degree k
+    k = length(xs) - 1 
+    n_quadpts_for_exact_approx = Int(ceil((k+1)/2))
+    ξ, w = gausslegendre(n_quadpts_for_exact_approx)
+
+    # gauss quad
+    quadsum = 0
+    for i = 1:n_quadpts_for_exact_approx 
+        quadsum += lagrange(ξ[i], xs, ys)*w[i]
+    end
+
+    return quadsum
 end 
