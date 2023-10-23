@@ -76,6 +76,8 @@ on 1D (?) domain with data points `xs` and `ys`.
 Uses a coordinate transformation to ensure that `xs` are in the required
 domain [-1, 1].
 
+NOTE: Not sure if this is correctly implemented.... check ferrite.jl??
+
 # References 
 [1] : Simpson2017 eq. 4.7-4.9
 """
