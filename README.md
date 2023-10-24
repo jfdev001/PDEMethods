@@ -110,7 +110,7 @@ To derive the weak form of Poisson's equation in 2D, define the following
 
 $$
 \begin{equation}
-- \nabla \cdot \nabla u = f \text{  Poisson's Equation}  
+-\nabla \cdot \nabla u = f 
 \end{equation}
 $$
 
