@@ -216,7 +216,7 @@ $$
 and the weak form of Poisson's equation is shown below.
 
 $$
-\int_{\Omega} \nabla v \nabla u\ d\Omega = \int_{\Omega} v\ d\Omega
+\int_{\Omega} \nabla v \nabla u\ d\Omega = \int_{\Omega} vf\ d\Omega
 $$
 
 # References
