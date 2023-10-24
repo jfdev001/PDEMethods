@@ -123,3 +123,6 @@ https://doi.org/10.3390/fluids4030159
 Engineering. 2004; 10(1).
 
 [8] Whiteley, J. (2017). Finite Element Methods: A Practical Guide. Springer.
+
+[9] Aerodynamic CFD. "Deriving the Weak Form in 2D for Poisson's Equation".
+(2018). url: https://www.youtube.com/watch?v=0dDrzGPFekM
