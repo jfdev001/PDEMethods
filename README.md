@@ -265,7 +265,7 @@ for a domain $\Omega^d$. For example, in the 2D Poisson equation,
 
 $$
 F = \begin{pmatrix}
-\frac{\partial x}{\partial X} & \frac{\partial x}{\partial Y} \\[6pt]
+\frac{\partial x}{\partial X} & \frac{\partial x}{\partial Y} \\\\
 \frac{\partial y}{\partial X} & \frac{\partial y}{\partial X}
 \end{pmatrix}
 $$
