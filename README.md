@@ -102,7 +102,9 @@ $$
 
 Since such a problem is an IVP and BVP, we have sufficient information to compute the solutions on the grid using an appropriate iterative method.
 
-## Weak Form of Poisson's Equation in 2D with Dirichlet BCs
+## Weak Form of Poisson's Equation in 2D with Dirichlet Boundary Conditions + Comments on Matrix Assembly
+
+### Weak Form Derivation
 
 This section is based on refs [8] and chapter 3 and 7 of [9].
 
@@ -155,14 +157,14 @@ $$
 \end{equation}
 $$
 
-We want to simplify equation (3) to only have first derivatives (see [here](https://math.stackexchange.com/questions/754511/finite-element-method-weak-formulation?rq=1)) because having second derivatives is more difficult/costly to implement. 
+We want to simplify equation (3) to only have first derivatives (see [here](https://math.stackexchange.com/questions/754511/finite-element-method-weak-formulation?rq=1)) because having second derivatives is more difficult/costly to implement.
 
 To do this, we define the vector calculus identity
 
 $$
 \begin{equation}
 \nabla \cdot (v\vec{F}) = v(\nabla \cdot \vec{F}) + \nabla v \cdot \vec{F}
-\end{equation} 
+\end{equation}
 $$
 
 where $v$ is a scalar field and $\vec{F}$ is a vector field.
@@ -185,13 +187,13 @@ $$
 \end{equation}
 $$
 
-and note that the Divergence theorem 
+and note that the Divergence theorem
 
 $$
 \int_{\Omega} \nabla \cdot \vec{A}\ d\Omega = \oint_{\partial \Omega = \Gamma} \vec{A} \cdot \vec{n}\ d\Gamma
 $$
 
-can be applied to 
+can be applied to
 
 $$
 \begin{equation}
@@ -199,7 +201,7 @@ $$
 \end{equation}
 $$
 
-by assigning $\vec{A} = v \nabla u$. 
+by assigning $\vec{A} = v \nabla u$.
 
 Substituting the right hand side equation (7) into equation (6) gives the below equation.
 
@@ -219,19 +221,60 @@ $$
 \boxed{\int_{\Omega} \nabla v \nabla u\ d\Omega = \int_{\Omega} vf\ d\Omega}
 $$
 
-Note that when actually approximating the solution, piecewise lienar functions are used such that $\phi_1, ..., \phi_N$ are linearly independent functions in $H_0^1(\Omega)$ and they span an $N$-dimensional ($N$ is the number of finite elements) subspace $\mathcal{V}_N$ of $H_0^1(\Omega)$. Thus we approximate $u$ at each node of a finite element mesh via 
+### The Finite Element Solution Given the Weak Form
+
+When actually approximating the solution, piecewise lienar functions are used such that $\phi_1, ..., \phi_N$ are linearly independent functions in $H_0^1(\Omega)$ and they span an $N$-dimensional ($N$ is the number of finite elements) subspace $\mathcal{V}_N$ of $H_0^1(\Omega)$. Thus we approximate $u$ at each node of a finite element mesh via
 
 $$
 U = \sum_{j=1}^{N+1} U_j \phi_j
-$$ 
+$$
 
-and we only test $U$ against $v \in \mathcal{V}_N$ of the functions of a set $S^h$ of the form 
+and we only test $U$ against $v \in \mathcal{V}_N$ of the functions of a set $S^h$ of the form
 
 $$
 V = \sum_{j=1}^{N+1} V_j \phi_j
-$$ 
+$$
 
 (see ref [13] and chapter 5 of ref [8]). This is called **Galerkin's method for solving the PDE**, and fundamentally we seek to find $U \in S_E^h$ for all functions $\phi_i \in S_E^h$ (chapter 3 and 5 of ref [8]). This notation is just concretely asserting that the basis functions (something that we choose, e.g., linear functions) $\phi_i$ that will represent the test function $v$ are equal to 0 at all points where Dirichlet boundary conditions are applied (functions in set $S_0^h$), and the trial functions $U$ satisfy the Dirichlet boundary conditions (so functions in set $S_E^h$).
+
+### From Physical Coordinates to Local Coordinates
+
+This section is based on chapter 7 of ref [8].
+
+For a triangular finite element $k$, there are three nodes $k_1$, $k_2$ and $k_3$ and each of those nodes takes on a coordinate in the physical space $(x_{k_1}, y_{k_1}), (x_{k_2}, y_{k_2}), (x_{k_3}, y_{k_3})$. For integration purposes, we map the physical coordinates to the canoncial coordinates $X \in [0, 1] $ and $Y \in [0, 1]$. Therefore, local basis functions on an element $k$ are defined for each node such that
+
+$$
+\begin{aligned}
+\phi_{\text{local}, 1}(X, Y) &= 1 - X - Y \\
+\phi_{\text{local}, 2}(X, Y) &= X \\
+\phi_{\text{local}, 3}(X, Y) &= Y
+\end{aligned}
+$$
+
+When constructing the system of alegbraic equations for an element $k$, one needs to ensure that the coordinate transformation is observed in the integral. This is done by taking the determinant of the jacobian $F$ which can be generally described below.
+
+$$
+F = \begin{pmatrix}
+\frac{\partial x_1}{\partial X_1} & \frac{\partial x_1}{\partial X_2} & \cdots & \frac{\partial x_1}{\partial X_d} \\
+\vdots & \cdots & \cdots & \vdots \\
+\frac{\partial x_d}{\partial X_1} & \cdots & \cdots & \frac{\partial x_d}{\partial X_d}
+\end{pmatrix}
+$$
+
+for a domain $\Omega^d$. For example, in the 2D Poisson equation,
+
+$$
+F = \begin{pmatrix}
+\frac{\partial x}{\partial X} & \frac{\partial x}{\partial Y} \\[6pt]
+\frac{\partial y}{\partial X} & \frac{\partial y}{\partial X}
+\end{pmatrix}
+$$
+
+So, as a concrete case, see the below:
+
+![1698190644845](image/README/1698190644845.png)
+
+where the domain of the triangular element $e_k$ in the physical coordinates becomes $\Delta$ in the local (canonical) coordinates.
 
 # References
 
