@@ -221,11 +221,15 @@ $$
 
 Note that when actually approximating the solution, piecewise lienar functions are used such that $\phi_1, ..., \phi_N$ are linearly independent functions in $H_0^1(\Omega)$ and they span an $N$-dimensional ($N$ is the number of finite elements) subspace $\mathcal{V}_N$ of $H_0^1(\Omega)$. Thus we approximate $u$ at each node of a finite element mesh via 
 
-$$U = \sum_{j=1}^{N+1} U_j \phi_j$$ 
+$$
+U = \sum_{j=1}^{N+1} U_j \phi_j
+$$ 
 
 and we only test $U$ against $v \in \mathcal{V}_N$ of the functions of a set $S^h$ of the form 
 
-$$V = \sum_{j=1}^{N+1} V_j \phi_j$$ 
+$$
+V = \sum_{j=1}^{N+1} V_j \phi_j
+$$ 
 
 (see ref [13] and chapter 5 of ref [8]). This is called **Galerkin's method for solving the PDE**, and fundamentally we seek to find $U \in S_E^h$ for all functions $\phi_i \in S_E^h$ (chapter 3 and 5 of ref [8]). This notation is just concretely asserting that the basis functions (something that we choose, e.g., linear functions) $\phi_i$ that will represent the test function $v$ are equal to 0 at all points where Dirichlet boundary conditions are applied (functions in set $S_0^h$), and the trial functions $U$ satisfy the Dirichlet boundary conditions (so functions in set $S_E^h$).
 
