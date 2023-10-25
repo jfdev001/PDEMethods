@@ -106,9 +106,10 @@ Since such a problem is an IVP and BVP, we have sufficient information to comput
 
 ## Finite Element Methods
 
-Overarching questions:
+Overarching questions/observations:
 
 * How does weak form change for (mixed) systems of DEs and how does it change for hyperbolic/parabolic PDEs? Elliptic PDE's (Laplace/Poisson) are canonical and easily studied.
+* Assembly of matrices is entirely independent of one another
 
 ### Poisson's Equation in 2D
 
