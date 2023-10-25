@@ -310,6 +310,35 @@ $$
 \end{aligned}
 $$
 
+The above proof could also be demonstrated by just using [vector calculus identities](https://en.wikipedia.org/wiki/Vector_calculus_identities)
+
+$$
+\begin{aligned}
+\nabla(\psi \phi) &= \phi \nabla \psi + \psi \nabla \phi && \text{Product rule scalar fields}\\
+\nabla \cdot (U \mathbf{A}) &= U \nabla \cdot \mathbf{A} + (\nabla U) \cdot \mathbf{A} && \text{Product rule scalar field, vector field} \\
+&= \psi\phi \nabla \cdot \nabla u + [\phi\nabla\psi + \psi\nabla\phi] \cdot \nabla u , && U = \psi\phi, \mathbf{A} = \nabla u \\
+&= \psi\phi\nabla \cdot \nabla u + \phi\nabla\psi \cdot \nabla u + \psi\nabla\phi \cdot \nabla u \\
+&= vp\nabla \cdot \nabla u + p\nabla v \cdot \nabla u + v\nabla p \cdot \nabla u , && v = \psi, p = \phi
+\end{aligned}
+$$
+
+Taking the final result of this equation, and aligning it with the desired identity,
+
+$$
+\begin{aligned}
+\nabla \cdot (vp\nabla u) &= p\nabla v \cdot \nabla u + \boxed{v\nabla \cdot p\nabla u}  \\
+&=p\nabla v \cdot \nabla u + \boxed{vp\nabla \cdot \nabla u  + v\nabla p \cdot \nabla u} 
+\end{aligned}
+$$
+
+then I want to show if 
+
+$$
+ v\nabla \cdot p\nabla u \stackrel{?}{=} vp\nabla \cdot \nabla u  + v\nabla p \cdot \nabla u
+$$
+
+which can be shown by applying the product rule for scalar and vector field to the left hand side of the equation.
+
 # References
 
 [1] Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
