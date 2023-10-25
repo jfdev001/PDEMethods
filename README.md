@@ -1,6 +1,6 @@
 # PDEMethods
 
-A Julia package for implementing numerical methods for canonical PDEs. General notes on PDEs, finite differences, and finite elements are dispersed throughout. Intended for self study only. The pronoun "we" is used to refer to both the reader and the author (Jared Frazier).
+A Julia package for implementing numerical methods for canonical PDEs (and possibly some ODEs sprinkled in). General notes on PDEs, finite differences, and finite elements are dispersed throughout. Intended for self study only. The pronoun "we" is used to refer to both the reader and the author (Jared Frazier).
 
 ## Finite Difference Methods
 
