@@ -276,6 +276,40 @@ So, as a concrete case, see the below:
 
 where the domain of the triangular element $e_k$ in the physical coordinates becomes $\Delta$ in the local (canonical) coordinates.
 
+### Proof of Vector Calculus Identity Relevant for General Elliptic PDEs
+
+Prove the following vector calculus identity.
+
+$$
+\begin{aligned}
+\nabla \cdot (vp\nabla u) &= v\nabla \cdot p\nabla u + p\nabla v \cdot \nabla u 
+\end{aligned}
+$$
+
+Given this identity, one can easily rearrange to get the desired weak form from chapter 8 of ref[8].
+
+$$
+\begin{aligned}
+-\nabla \cdot (vp\nabla u) &= -v\nabla \cdot p\nabla u - p\nabla v \cdot \nabla u \\
+-\nabla \cdot (vp\nabla u) + p\nabla v \cdot \nabla u &= -v\nabla \cdot p\nabla u
+\end{aligned}
+$$
+
+To prove the above identity, I basically follow [proof for product rule of divergence](https://proofwiki.org/wiki/Product_Rule_for_Divergence) but substitute $U = pv$ and $\mathbf{A} = \nabla u$ but must be going wrong somewhere, here is my attempt:
+
+$$
+\begin{aligned}
+\nabla \cdot (vp\mathbf{A}) &= \sum_{k=1}^n \frac{\partial (vpA_k)}{\partial x_k} && \text{Definition divergence} && \text{(s1)} \\
+&= \sum_{k=1}^n vp\frac{\partial A_k}{\partial x_k} + \sum_{k=1}^n v \frac{\partial p}{\partial x_k}A_k + \sum_{k=1}^n \frac{\partial v}{\partial x_k} p A_k && \text{Product rule} && \text{(s2)} \\
+&= vp \sum_{k=1}^n \frac{\partial A_k}{\partial x_k} + v \sum_{k=1}^n \frac{\partial p}{\partial x_k}A_k + p \sum_{k=1}^n \frac{\partial v}{\partial x_k} A_k && \text{Factor non-subscripted terms} && \text{(s3)} \\
+&= vp\nabla \cdot \mathbf{A} + v \sum_{k=1}^n \frac{\partial p}{\partial x_k}A_k + p \sum_{k=1}^n \frac{\partial v}{\partial x_k} A_k && \text{Definition divergence} && \text{(s4)} \\
+&= vp\nabla \cdot \mathbf{A} + v \left[ \sum_{k=1}^n \frac{\partial p}{\partial x_k}\mathbf{e_k} \cdot \sum_{k=1}^n A_k \mathbf{e_k}\right] + p\sum_{k=1}^n \frac{\partial v}{\partial x_k} A_k && \text{Definition dot product} && \text{(s5)} \\
+&= vp\nabla \cdot \mathbf{A} + v \nabla p \cdot \mathbf{A} + p\sum_{k=1}^n \frac{\partial v}{\partial x_k} A_k && \text{Definition gradient} && \text{(s6)} \\
+&= vp\nabla \cdot \mathbf{A} + v \nabla p \cdot \mathbf{A} + p \nabla v \cdot \mathbf{A} && \text{(s5) and (s6) on last term} && \text{(s7)} \\
+&= vp\nabla \cdot \nabla u + v \nabla p \cdot \nabla u + p \nabla v \cdot \nabla u && \mathbf{A} = \nabla u && \text{(s8)} 
+\end{aligned}
+$$
+
 # References
 
 [1] Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
