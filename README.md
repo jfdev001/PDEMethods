@@ -350,6 +350,44 @@ $$
 
 which can be shown by applying the product rule for scalar and vector field to the left hand side of the equation.
 
+### Parabolic Partial Differential Equation in 2D
+
+We will show the steps of deriving the weak form, discretizing the physical domain into a mesh of triangular finite elements, selecting suitable basis functions, formulating the weak form in terms of basis functions, and then describing the subsequent assembly of an algebraic system of equations.
+
+$$
+\begin{align}
+\frac{\partial u}{\partial t} &= \nabla \cdot (\nabla u) + f(x, y, t) \\
+f(x, y, t) &= e^{-t}(2x(1-x) + 2y(1-y) - xy(1-x)(1-y))
+\end{align}
+$$
+
+such that $x \in [0, 1], y \in [0, 1], t \in [0, 3]$ and the physical domain is defined by $\Omega$. The system is subject to the Dirichlet boundary conditions given by, for $0 < t < 3$:
+
+$$
+\begin{align}
+u(x, 0, t) &= 0 && \text{Bottom} \\
+u(1, y, t) &= 0 && \text{Right} \\
+u(x, 1, t) &= 0 && \text{Top} \\
+u(0, y, t) &= 0 && \text{Left}
+\end{align}
+$$
+
+and the initial conditions
+
+$$
+\begin{equation}
+u(x, y, 0) = xy(1-x)(1-y).
+\end{equation}
+$$
+
+The differential equation has a solution 
+
+$$
+\begin{equation}
+u(x,y,t) = xy(1-x)(1-y)e^{-t}
+\end{equation}
+$$
+
 # References
 
 [1] Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
