@@ -109,8 +109,9 @@ Since such a problem is an IVP and BVP, we have sufficient information to comput
 Overarching questions/observations:
 
 * How does weak form change for (mixed) systems of DEs and how does it change for hyperbolic/parabolic PDEs? Elliptic PDE's (Laplace/Poisson) are canonical and easily studied.
-* Assembly of matrices is entirely independent of one another
+* Assembly of matrices is entirely independent of one another (ideal for parallel programming?)
 * Chapter 7 ref [8], "One word of caution is that the user should perform a check to ensure that the connectivity array does list the nodes of each element in an anticlockwise direction. This is straightforward to do—if the determinant of the Jacobian of the transformation between an element and the canonical element, given by Eq. (7.38), is negative, then the nodes are not listed in the correct order. If the nodes are not ordered correctly, then this may be fixed by interchanging the order of two nodes of that element in the connectivity array."
+* The examples covered so far have been time independent (i.e., stationary); however, ref [5] shows time dependent (i.e., non-stationary) PDEs, and it seems the only additional step is finite difference discretization of any time related terms.
 
 ### Poisson's Equation in 2D
 
