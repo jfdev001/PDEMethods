@@ -2,7 +2,9 @@
 
 A Julia package for implementing numerical methods for canonical PDEs. General notes on PDEs, finite differences, and finite elements are dispersed throughout. Intended for self study only. The pronoun "we" is used to refer to both the reader and the author (Jared Frazier).
 
-## Forward, Centered, Backward Finite Differences
+## Finite Difference Methods
+
+### Forward, Centered, Backward Finite Differences
 
 This section is based on chapter 8 of ref [1].
 
@@ -63,7 +65,7 @@ u''(x) &= \frac{u(x + \Delta x) + u(x - \Delta x) - 2u(x)}{(\Delta x)^2}
 \end{aligned}
 $$
 
-## The Five Point Stencil for the Laplace Equation in 2D
+### The Five Point Stencil for the Laplace Equation in 2D
 
 Note that for a PDE like the laplace equation in 2D
 
@@ -102,9 +104,15 @@ $$
 
 Since such a problem is an IVP and BVP, we have sufficient information to compute the solutions on the grid using an appropriate iterative method.
 
-## Weak Form of Poisson's Equation in 2D with Dirichlet Boundary Conditions + Comments on Matrix Assembly
+## Finite Element Methods
 
-### Weak Form Derivation
+Overarching questions:
+
+* How does weak form change for (mixed) systems of DEs and how does it change for hyperbolic/parabolic PDEs? Elliptic PDE's (Laplace/Poisson) are canonical and easily studied.
+
+### Poisson's Equation in 2D
+
+#### Weak Form Derivation
 
 This section is based on refs [8] and chapter 3 and 7 of [9].
 
@@ -221,7 +229,7 @@ $$
 \boxed{\int_{\Omega} \nabla v \nabla u\ d\Omega = \int_{\Omega} vf\ d\Omega}
 $$
 
-### The Finite Element Solution Given the Weak Form
+#### The Finite Element Solution Given the Weak Form
 
 When actually approximating the solution, piecewise lienar functions are used such that $\phi_1, ..., \phi_N$ are linearly independent functions in $H_0^1(\Omega)$ and they span an $N$-dimensional ($N$ is the number of finite elements) subspace $\mathcal{V}_N$ of $H_0^1(\Omega)$. Thus we approximate $u$ at each node of a finite element mesh via
 
@@ -237,7 +245,7 @@ $$
 
 (see ref [13] and chapter 5 of ref [8]). This is called **Galerkin's method for solving the PDE**, and fundamentally we seek to find $U \in S_E^h$ for all functions $\phi_i \in S_E^h$ (chapter 3 and 5 of ref [8]). This notation is just concretely asserting that the basis functions (something that we choose, e.g., linear functions) $\phi_i$ that will represent the test function $v$ are equal to 0 at all points where Dirichlet boundary conditions are applied (functions in set $S_0^h$), and the trial functions $U$ satisfy the Dirichlet boundary conditions (so functions in set $S_E^h$).
 
-### From Physical Coordinates to Local Coordinates
+#### From Physical Coordinates to Local Coordinates
 
 This section is based on chapter 7 of ref [8].
 
@@ -276,7 +284,7 @@ So, as a concrete case, see the below:
 
 where the domain of the triangular element $e_k$ in the physical coordinates becomes $\Delta$ in the local (canonical) coordinates.
 
-### Proof of Vector Calculus Identity Relevant for General Elliptic PDEs
+#### Proof of Vector Calculus Identity Relevant for General Elliptic PDEs
 
 Prove the following vector calculus identity.
 
@@ -295,7 +303,7 @@ $$
 \end{aligned}
 $$
 
-To prove the above identity, I basically follow [proof for product rule of divergence](https://proofwiki.org/wiki/Product_Rule_for_Divergence) but substitute $U = pv$ and $\mathbf{A} = \nabla u$ but must be going wrong somewhere, here is my attempt:
+To prove the above identity, I basically follow [proof for product rule of divergence](https://proofwiki.org/wiki/Product_Rule_for_Divergence) but substitute $U = pv$ and $\mathbf{A} = \nabla u$:
 
 $$
 \begin{aligned}
@@ -331,10 +339,10 @@ $$
 \end{aligned}
 $$
 
-then I want to show if 
+then I want to show if
 
 $$
- v\nabla \cdot p\nabla u \stackrel{?}{=} vp\nabla \cdot \nabla u  + v\nabla p \cdot \nabla u
+v\nabla \cdot p\nabla u \stackrel{?}{=} vp\nabla \cdot \nabla u  + v\nabla p \cdot \nabla u
 $$
 
 which can be shown by applying the product rule for scalar and vector field to the left hand side of the equation.
