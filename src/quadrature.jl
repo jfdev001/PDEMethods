@@ -103,3 +103,23 @@ function gausslegendrequad_lagrange(xs, ys)
 
     return quadsum
 end 
+
+"""
+    scaled_gausslegendre(n)
+
+Return the scaled Gauss-Legendre `n` quadrature points and `n` weights. 
+These quadrature points and weights are used for the numerical integration over 
+a canonical d-dimensional domain in [0, 1]^d.
+
+# References
+[1] : https://en.wikipedia.org/wiki/Gaussian_quadrature
+
+[2] : Table 3.1 Whiteley2017
+"""
+function scaled_gausslegendre(n)
+    @assert n >= 1
+    pts, wts = gausslegendre(n)
+    pts = (1/2)*(1 .+ pts)
+    wts = (1/2)*wts
+    pts, wts
+end 
