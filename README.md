@@ -115,7 +115,7 @@ Overarching questions/observations:
 
 ### Poisson's Equation in 2D
 
-#### Weak Form Derivation
+#### Poisson Weak Form Derivation
 
 This section is based on refs [8] and chapter 3 and 7 of [9].
 
@@ -352,7 +352,9 @@ which can be shown by applying the product rule for scalar and vector field to t
 
 ### Parabolic Partial Differential Equation in 2D
 
-We will show the steps of deriving the weak form, discretizing the physical domain into a mesh of triangular finite elements, selecting suitable basis functions, formulating the weak form in terms of basis functions, and then describing the subsequent assembly of an algebraic system of equations.
+#### Problem Statement
+
+We will show the steps of deriving the weak form, discretizing the physical domain into a mesh of triangular finite elements, selecting suitable basis functions, formulating the weak form in terms of basis functions, and then describing the subsequent assembly of an algebraic system of equations. The original problem is given below, however we will use a backward finite difference to discretize time and also rearrange the formula to be a linear elliptic PDE.
 
 $$
 \begin{align}
@@ -361,7 +363,16 @@ f(x, y, t) &= e^{-t}(2x(1-x) + 2y(1-y) - xy(1-x)(1-y))
 \end{align}
 $$
 
-such that $x \in [0, 1], y \in [0, 1], t \in [0, 3]$ and the physical domain is defined by $\Omega$. The system is subject to the Dirichlet boundary conditions given by, for $0 < t < 3$:
+Rearranging to the desired form,
+
+$$
+\begin{align}
+\frac{u^{(m)} - u^{m-1}}{t_m - t_{m-1}} &= \nabla \cdot \nabla u^{(m)} + f(x,y, t_m) \\
+\boxed{- \nabla \cdot \nabla u + \frac{u^{(m)}}{\Delta t}} &= \boxed{f + \frac{u^{(m-1)}}{\Delta t}}
+\end{align}
+$$
+
+such that $x \in [0, 1], y \in [0, 1], t \in [0, 3], t_{m-1} < t \leq t_m, m \in [1...M]$ and the physical domain is defined by $\Omega$. The system is subject to the Dirichlet boundary conditions given by, for $0 < t < 3$:
 
 $$
 \begin{align}
@@ -380,12 +391,25 @@ u(x, y, 0) = xy(1-x)(1-y).
 \end{equation}
 $$
 
-The differential equation has a solution 
+The differential equation has a solution
 
 $$
 \begin{equation}
 u(x,y,t) = xy(1-x)(1-y)e^{-t}
 \end{equation}
+$$
+
+#### Linear Elliptic Weak Form Derivation
+
+We multiply the rearranged PDE (the boxed PDE, henceforth referred to as the "governing PDE") by a function $v: \mathbb{R}^2 \rightarrow \mathbb{R}$ where $v \in H_0^1$ (the subset of the Sobolev space of order 1 for which all functions $\psi = 0$ in the space at Dirichlet boundary conditions). Following this multiplication, we integrate over the domain $\Omega$ and we simplify as much as possible since the goal is to form a linear system of equations ${\mathbf{A}\vec{U} = \vec{b}}$ (more on the time dependence later) where $\vec{U}$ is the finite solution for all nodes in a discretized mesh on the domain $\Omega$. Below shows the multiplication and integration over $\Omega$, with some comments as necessary.
+
+$$
+\begin{aligned}
+-\int_{\Omega} v \nabla \cdot \nabla u^{(m)}\ d\Omega + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega \\ % nl
+-\left[\int_{\Omega} \nabla \cdot v \nabla u^{(m)} - \nabla v \cdot \nabla u^{(m)}\ d\Omega \right] + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && \text{Product rule} \\ %nl
+-\left[\int_{\partial \Omega} v \nabla u^{(m)} \cdot \vec{n}\ ds - \int_{\Omega} \nabla v \cdot \nabla u^{(m)}\ d\Omega \right] + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && \text{Divergence}\\ %nl
+\int_{\Omega} \nabla v \cdot \nabla u^{(m)} + v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && v \in H_0^1 \rightarrow \text{Weak Form} \\
+\end{aligned}
 $$
 
 # References
