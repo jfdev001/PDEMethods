@@ -352,6 +352,8 @@ which can be shown by applying the product rule for scalar and vector field to t
 
 ### Parabolic Partial Differential Equation in 2D
 
+The following sections are based on chapters 3, 7, and 13 from [8].
+
 #### Problem Statement
 
 We will show the steps of deriving the weak form, discretizing the physical domain into a mesh of triangular finite elements, selecting suitable basis functions, formulating the weak form in terms of basis functions, and then describing the subsequent assembly of an algebraic system of equations. The original problem is given below, however we will use a backward finite difference to discretize time and also rearrange the formula to be a linear elliptic PDE.
@@ -399,18 +401,109 @@ u(x,y,t) = xy(1-x)(1-y)e^{-t}
 \end{equation}
 $$
 
-#### Linear Elliptic Weak Form Derivation
+#### Linear Elliptic PDE Weak Form Derivation
 
-We multiply the rearranged PDE (the boxed PDE, henceforth referred to as the "governing PDE") by a function $v: \mathbb{R}^2 \rightarrow \mathbb{R}$ where $v \in H_0^1$ (the subset of the Sobolev space of order 1 for which all functions $\psi = 0$ in the space at Dirichlet boundary conditions). Following this multiplication, we integrate over the domain $\Omega$ and we simplify as much as possible since the goal is to form a linear system of equations ${\mathbf{A}\vec{U} = \vec{b}}$ (more on the time dependence later) where $\vec{U}$ is the finite solution for all nodes in a discretized mesh on the domain $\Omega$. Below shows the multiplication and integration over $\Omega$, with some comments as necessary.
+We multiply the rearranged PDE (the boxed PDE, henceforth referred to as the "governing PDE") by a function $v: \mathbb{R}^2 \rightarrow \mathbb{R}$ where $v \in H_0^1$ (the subset of the Sobolev space of order 1 for which all functions $\psi = 0$ in the space at Dirichlet boundary conditions). Note now that this equation is a linear elliptic PDE whereas previously it was a linear parabolic PDE. Following this multiplication, we integrate over the domain $\Omega$ and we simplify as much as possible since the goal is to form a linear system of equations ${\mathbf{A}\vec{U} = \vec{b}}$ (more on the time dependence later) where $\vec{U}$ is the finite solution for all nodes in a discretized mesh on the domain $\Omega$. Below shows the multiplication and integration over $\Omega$, with some comments as necessary.
 
 $$
 \begin{aligned}
 -\int_{\Omega} v \nabla \cdot \nabla u^{(m)}\ d\Omega + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega \\\\ % nl
 -\left[\int_{\Omega} \nabla \cdot v \nabla u^{(m)} - \nabla v \cdot \nabla u^{(m)}\ d\Omega \right] + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && \text{Product rule} \\\\ %nl
 -\left[\int_{\partial \Omega} v \nabla u^{(m)} \cdot \vec{n}\ ds - \int_{\Omega} \nabla v \cdot \nabla u^{(m)}\ d\Omega \right] + \int_{\Omega} v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && \text{Divergence}\\\\ %nl
-\int_{\Omega} \nabla v \cdot \nabla u^{(m)} + v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && v \in H_0^1 \therefore \text{Weak Form} \\
+\int_{\Omega} \nabla v \cdot \nabla u^{(m)} + v \frac{u^{(m)}}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{u^{(m-1)}}{\Delta t}\ d\Omega && v \in H_0^1 \therefore \text{Weak Form} 
 \end{aligned}
 $$
+
+#### Mesh and Basis Functions
+
+The finite element solution of the model problem will be a linear approximation to the true solution on each canonical triangular element with a mesh with $N_x$ rectangles and $N_y$ rectangles with a diagonal through each rectangle creating the right triangles for the mesh. Nodes of element $k$ in a mesh of triangular elements are $k_1$, $k_2$, and $k_3$ and the corresponding physical coordinates are $x_{k_1}$, $x_{k_2}$, $x_{k_3}$ and $y_{k_1}$, $y_{k_2}$, $y_{k_3}$. The mapping between physical coordinates and the canonical coordinates is described by
+
+$$
+\begin{aligned}
+x &= (1 - X - Y)x_{k_1} + X x_{k_2} + Y x_{k_3} \\\\
+y &= (1 - X - Y)y_{k_1} + X y_{k_2} + Y y_{k_3}
+\end{aligned}
+$$
+
+with local linear basis functions
+
+$$
+\begin{aligned}
+\phi_{local, 1}(X, Y) &= \phi_{k_1}(X, Y) = 1 - X -Y \\\\
+\phi_{local, 2}(X, Y) &= \phi_{k_2}(X, Y) = X \\\\
+\phi_{local, 3}(X, Y) &= \phi_{k_3}(X, Y) = Y \\\\
+\phi_{j}(X, Y) &= 0 && j \neq k_1, j \neq k_2, j \neq k_3
+\end{aligned}
+$$
+
+and more generally, basis functions satisfy the condition that
+
+$$
+\phi_j(x_i) = \phi_j(x_i, y_i) = \begin{cases}
+1, & i = j, \\
+0, & i \neq j,
+\end{cases}
+$$
+
+where $\phi_j(x_i) = \phi_j(x_i, y_i)$ are equivalent since by definition, the subscript of the two coordinates will be the same. They will never be something like $(x_{k_1}, y_{k_2})$ since such a point does not actually exist. See the below graphic from [8] as a visual "proof".
+
+![1698311149539](image/README/1698311149539.png)
+
+#### Functions Satisfying the Finite Element Solution
+
+This is essentially the Sobolev space definitions from section [Poisson Weak Form Derivation](#poisson-weak-form-derivation) except the function $V$ is specified a linear combination of basis function $\phi$:
+
+$$
+\begin{aligned}
+S^h &= \{ V : \Omega \rightarrow \mathbb{R}\ |\ V(x, y) = \sum_{j=1}^{N_{nodes}} V_j \phi_j(x, y) \} \\\\
+S_E^h &= \{ V \in S^h\ |\ V \text{ satisfies all Dirichlet boundary conditions} \} \\\\
+S_0^h &= \{ V \in S^h\ |\ V(x, y) = 0 \text{ at all points } (x, y) \text{ where Dirichlet boundary conditions are specfied} \}.
+\end{aligned}
+$$
+
+#### The Finite Element Solution
+
+We approximate the solution at each point in the mesh with
+
+$$
+U^{(m)}(x, y) = \sum_{j=1}^{N_{nodes}}U^{(m)}_j \phi_j(x, y)
+$$
+
+where $U^{(m)} \in S^h$ for a timestep $m$ and note that
+
+$$
+U^{(m)}_i = U^{(m)}(x_i, y_i)
+$$
+
+while the coefficients $U_j \in S_E^h$ such that the weak form now becomes
+
+$$
+\int_{\Omega} \nabla \phi_i \cdot \nabla U^{(m)} + \phi_i \frac{U^{(m)}}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+$$
+
+for all $\phi_i \in S_0^h$.
+
+#### The System of Algebraic Equations
+
+To assemble the system of algebraic equations, we assemble a system of $N_{node}$ algebraic equations for the unknown quantities $U_1^{(m)}, U_2^{(m)}, ..., U_{N_{nodes}}^{(m)}$. These equations are drawn from two sources: (i) equations that ensure the finite element solution satisfies the Dirichlet boundary conditions; and (ii) equations that arise from substituting suitable test functions $\phi_i \in S_0^h(\Omega)$.
+
+##### Dirichlet Boundary Conditions
+
+Since we imposed that ${U^{(m)} \in S_E^h}$, $U^{(m)}$ must satisfy Dirichlet boundary conditions, and suppose a node $i$ lies on boundary $\partial \Omega$, then to satisfy Dirichlet boundary conditions, ${U_i^{(m)} = 0\ \forall (x_i, y_i) \in \partial \Omega}$. This is clearly not the case though since from the defintiion of $U_i^{(m)}$ as a summation of basis functions $\phi$, then
+
+$$
+\begin{aligned}
+U_i^{(m)} &= U^{(m)}(x_i, y_i) = \sum_{j=1}^{N_{nodes}} U_j^{(m)} \phi_j(x_i, y_i), && \phi_j(x_i) = 1 \text{ iff i = j}
+\end{aligned}
+$$
+
+which implies that $U_i^{(m)}$ at a boundary does not equal 0, and thus $\phi_i \notin S_0^h(\Omega)$.
+
+##### Suitable Test Functions
+
+Not sure about logic here. Asked question [here](https://math.stackexchange.com/questions/4794378/suitable-test-functions-for-finite-element-solution-as-a-subset-of-s-0h-omega).
+
+
 
 # References
 
