@@ -503,7 +503,55 @@ which implies that $U_i^{(m)}$ at a boundary does not equal 0, and thus $\phi_i 
 
 Not sure about logic here. Asked question [here](https://math.stackexchange.com/questions/4794378/suitable-test-functions-for-finite-element-solution-as-a-subset-of-s-0h-omega).
 
+But in any case, the claim is that if a node $i$ does not lie on the boundary, $\partial \Omega$, then it follows that $\phi_i \in S_0^h$, and since
 
+$$
+\nabla U^{(m)}(x, y) = \sum_{j=1}^{N_{nodes}} U^{(m)}_j \nabla \phi_j(x, y)
+$$
+
+then one can substitute this into the weak form
+
+$$
+\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U^{(m)}_j \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+$$
+
+and we leave $U^{(m-1)}$ as is, since this is a  vector with elements that are known from the previous iteration $m-1$ (or from initial conditions). Now the sum can actually be factored out, which I will show with a stripped down example below (which is just using distributive properties of dot products and commutativity of addition) just to convince the reader/author.
+
+$$
+\begin{aligned}
+(\nabla \phi_i \cdot \sum_{j=1}^2 \nabla \phi_j) + \sum_{j=1}^2 \nabla \phi_j &= (\nabla \phi_i \cdot \left[ \nabla \phi_1 + \nabla \phi_2 \right]) + \left[ \nabla \phi_1 + \nabla \phi_2 \right] \\\\ 
+&= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_i \cdot \nabla \phi_2) + (\nabla \phi_1 + \nabla \phi_2)  \\\\
+&= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_1) + (\nabla \phi_i \cdot \nabla \phi_2 + \nabla \phi_2) \\\\
+&= \sum_{j=1}^2 \nabla \phi_i \cdot \nabla \phi_j + \nabla \phi_j
+\end{aligned} 
+$$
+
+Therefore, the weak form becomes
+
+$$
+\begin{aligned}
+\int_{\Omega} \sum_{j=1}^{N_{nodes}} \nabla \phi_i \cdot  U^{(m)}_j \nabla \phi_j + \phi_i \frac{U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega  && \text{Factor sum} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} \nabla \phi_i \cdot  U^{(m)}_j \nabla \phi_j + \phi_i \frac{U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Integral(Sums) == Sum(Integrals)} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} (\nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}) U^{(m)}_j \ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Factor the scalar } U_j^{(m)}
+\end{aligned}
+$$
+
+which can be written as
+
+$$
+\sum_{j=1}^{N_{nodes}} A_{i,j} U_j^{(m)} = b_i
+$$
+
+where 
+
+$$
+\begin{aligned}
+A_{i,j} &= \int_{\Omega} \nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}\ d\Omega \\\\
+b_{i} &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+\end{aligned}
+$$
+
+##### The Linear System
 
 # References
 
