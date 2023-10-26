@@ -512,7 +512,7 @@ $$
 then one can substitute this into the weak form
 
 $$
-\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U^{(m)}_j \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
 $$
 
 and we leave $U^{(m-1)}$ as is, since this is a  vector with elements that are known from the previous iteration $m-1$ (or from initial conditions). Now the sum can actually be factored out, which I will show with a stripped down example below (which is just using distributive properties of dot products and commutativity of addition) just to convince the reader/author.
@@ -530,9 +530,9 @@ Therefore, the weak form becomes
 
 $$
 \begin{aligned}
-\int_{\Omega} \sum_{j=1}^{N_{nodes}} \nabla \phi_i \cdot  U^{(m)}_j \nabla \phi_j + \phi_i \frac{U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega  && \text{Factor sum} \\\\
-\sum_{j=1}^{N_{nodes}} \int_{\Omega} \nabla \phi_i \cdot  U^{(m)}_j \nabla \phi_j + \phi_i \frac{U^{(m)}_j \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Integral(Sums) == Sum(Integrals)} \\\\
-\sum_{j=1}^{N_{nodes}} \int_{\Omega} (\nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}) U^{(m)}_j \ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Factor the scalar } U_j^{(m)}
+\int_{\Omega} \sum_{j=1}^{N_{nodes}} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega  && \text{Factor sum} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Integral(Sums) == Sum(Integrals)} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} (\nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}) U_j^{(m)} \ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Factor the scalar } U_j^{(m)}
 \end{aligned}
 $$
 
