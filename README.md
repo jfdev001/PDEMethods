@@ -489,7 +489,15 @@ To assemble the system of algebraic equations, we assemble a system of $N_{node}
 
 ##### Dirichlet Boundary Conditions
 
-Since we imposed that ${U^{(m)} \in S_E^h}$, $U^{(m)}$ must satisfy Dirichlet boundary conditions, and suppose a node $i$ lies on boundary $\partial \Omega$, then to satisfy Dirichlet boundary conditions, ${U_i^{(m)} = 0\ \forall (x_i, y_i) \in \partial \Omega}$. This is clearly not the case though since from the defintiion of $U_i^{(m)}$ as a summation of basis functions $\phi$, then
+Since we imposed that ${U^{(m)} \in S_E^h}$, $U^{(m)}$ must satisfy Dirichlet boundary conditions, and suppose a node $i$ lies on boundary $\partial \Omega$, then to satisfy Dirichlet boundary conditions,
+
+$$
+\begin{equation} 
+U_i^{(m)} = 0\ \forall (x_i, y_i) \in \partial \Omega.
+\end{equation}
+$$
+
+This is clearly not the case though since from the defintiion of $U_i^{(m)}$ as a summation of basis functions $\phi$, then
 
 $$
 \begin{aligned}
@@ -523,7 +531,7 @@ $$
 &= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_i \cdot \nabla \phi_2) + (\nabla \phi_1 + \nabla \phi_2)  \\\\
 &= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_1) + (\nabla \phi_i \cdot \nabla \phi_2 + \nabla \phi_2) \\\\
 &= \sum_{j=1}^2 \nabla \phi_i \cdot \nabla \phi_j + \nabla \phi_j
-\end{aligned} 
+\end{aligned}
 $$
 
 Therefore, the weak form becomes
@@ -542,7 +550,7 @@ $$
 \sum_{j=1}^{N_{nodes}} A_{i,j} U_j^{(m)} = b_i
 $$
 
-where 
+where
 
 $$
 \begin{aligned}
@@ -552,6 +560,70 @@ b_{i} &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
 $$
 
 ##### The Linear System
+
+This results in a linear system of equations for the time step $m$
+
+$$
+\begin{equation}
+\mathbf{A}\vec{U} = \vec{b}.
+\end{equation}
+$$
+
+It is important to recognize how the boundary conditions affect the assembly of the matrix $\mathbf{A}$. Since it is known that $U_i^{(m)}=0$ on the boundary, then if a node $i$ lies on the boundary,
+
+$$
+\begin{align}
+A_{i,j} &= \begin{cases}
+1, & j = i, \\
+0, & j \neq i
+\end{cases} \\\\
+b_i &= 0
+\end{align}
+$$
+
+which follows naturally from considering the follow example. If the node $i = 1$ lies on the boundary, then it is known from Dirichlet boundary conditions that $U_1 = 0$. To properly construct the linear system of equations, consider a finite element mesh of 3 nodes and the corresponding linear system of equations
+
+$$
+\begin{bmatrix}
+A_{11} & A_{12} & A_{13} \\\\
+A_{21} & A_{22} & A_{23} \\\\
+A_{31} & A_{32} & A_{33}
+\end{bmatrix}
+\begin{bmatrix}
+U_1 \\\\
+U_2 \\\\
+U_3 
+\end{bmatrix}
+=
+\begin{bmatrix}
+b_1 \\\\
+b_2 \\\\
+b_3 
+\end{bmatrix}
+$$
+
+where, given the boundary conditions, the first line of the system of equations is
+
+$$
+\begin{aligned}
+A_{11} U_1 + A_{12} U_2 + A_{13} U_3 &= b_1 \\\\
+1U_1 + 0U_2 + 0U_3 &= 0 \\\ 
+U_1 &= 0
+\end{aligned}
+$$
+
+and this requires that
+
+$$
+A = \begin{bmatrix}
+1 & 0 & 0 \\\\
+A_{21} & A_{22} & A_{23} \\\\
+A_{31} & A_{32} & A_{33}
+\end{bmatrix}
+$$
+
+where only $A_{11} = 1$ because $i = 1$ for $U_1 = 0$ and $A_{11}$ matches the first case since
+$j = i = 1$.
 
 # References
 
