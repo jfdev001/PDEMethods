@@ -61,18 +61,18 @@ function lagrange(p, x, y)
     @assert k_plus_one == length(y) "`x` and `y` are coordinate pairs"
     interp_polynomial = 0
     for j = 1:k_plus_one
-        interp_polynomial += y[j]*lagrange_basis(p, j, x, y)
+        interp_polynomial += y[j]*lagrange_basis(p, j, x)
     end
     return interp_polynomial
 end 
 
 """
-    lagrange_basis(p, j, x, y)
+    lagrange_basis(p, j, x)
 
 Return lagrange basis polynomial at point `p` about a nodal index 
-`j` for a set of discrete x-values (`x`) and corresponding y-values (`y`).
+`j` for a set of discrete x-values (`x`).
 """
-function lagrange_basis(p, j, x, y)
+function lagrange_basis(p, j, x)
     #   1   2  ...   k+1
     # {x0, x1, ... , xk} |> length --> k + 1
     k_plus_one = length(x)
