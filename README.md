@@ -593,8 +593,7 @@ A_{31} & A_{32} & A_{33}
 U_1 \\\\
 U_2 \\\\
 U_3 
-\end{bmatrix}
-=
+\end{bmatrix} =
 \begin{bmatrix}
 b_1 \\\\
 b_2 \\\\
