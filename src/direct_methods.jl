@@ -142,3 +142,32 @@ function forward_substitution_matheq(L::Matrix, b::Vector)
     end
     return x
 end
+
+function back_substitution(U::Matrix, b_::Vector)
+    m, n = size(U)
+    b = copy(b_)
+    x = zeros(n)
+    for j = n:-1:1
+        U[j,j] == 0 && break
+        x[j] = b[j]/U[j, j]
+        for i = 1:j-1
+            b[i] = b[i] - U[i, j]*x[j]
+        end
+    end
+    return x
+end
+
+function back_substitution_matheq(U::Matrix, b::Vector) 
+    n, m = size(U) 
+    x = zeros(n)
+    x[n] = b[n]/U[n, n]
+    for i = n-1:-1:1
+        inner_sum = 0
+        for j = i+1:n
+            inner_sum += U[i, j]*x[j]
+        end
+        U[i, i] == 0 && break
+        x[i] = (b[i] - inner_sum)/U[i,i]
+    end
+    return x
+end 
