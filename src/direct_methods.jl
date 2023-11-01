@@ -95,6 +95,50 @@ function cholesky_factorization(A)
     return L
 end
 
-function forward_substitution
+"""   
+    forward_substitution(L::Matrix, b::Vector)
 
+Solve a system of equations with lower triangular system `L` and rhs `b` by
+forward substitution.
+ 
+# References
+[1] : Heath algorithm 2.1.
+"""
+function forward_substitution(L::Matrix, b_::Vector)
+    # L is square, so m, n doesn't really matter here
+    m, n = size(L)
+    x = zeros(n)
+    b = copy(b_)
+    for j = 1:n # loops over columns
+        if L[j, j] == 0
+            @show break
+        end
+        x[j] = b[j]/L[j, j]
+        for i = (j + 1):n
+            b[i] = b[i] - L[i, j]*x[j]
+        end
+    end 
+    return x 
+end
+
+"""
+    forward_substitution_matheq(L::Matrix, b::Vector)
+
+Direct conversion of equation in Heath pg. 64 describing forward substitution.
+"""
+function forward_substitution_matheq(L::Matrix, b::Vector)
+    n, m = size(L) # n == nrows based on eq, tho n == m because square anyway
+    x = zeros(n) 
+    x[1] = b[1]/L[1, 1]
+    for i = 2:n
+        inner_sum = 0
+        for j = 1:i-1
+            inner_sum += L[i, j]*x[j]
+        end
+        if L[i, i] == 0 # prevent divide 0
+            @show break
+        end
+        (x[i] = (b[i] - inner_sum)/L[i, i])
+    end
+    return x
 end
