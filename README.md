@@ -520,17 +520,17 @@ $$
 then one can substitute this into the weak form
 
 $$
-\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U_j^{(m)} \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
 $$
 
 and we leave $U^{(m-1)}$ as is, since this is a  vector with elements that are known from the previous iteration $m-1$ (or from initial conditions). Now the sum can actually be factored out, which I will show with a stripped down example below (which is just using distributive properties of dot products and commutativity of addition) just to convince the reader/author.
 
 $$
 \begin{aligned}
-(\nabla \phi_i \cdot \sum_{j=1}^2 \nabla \phi_j) + \sum_{j=1}^2 \nabla \phi_j &= (\nabla \phi_i \cdot \left[ \nabla \phi_1 + \nabla \phi_2 \right]) + \left[ \nabla \phi_1 + \nabla \phi_2 \right] \\\\ 
-&= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_i \cdot \nabla \phi_2) + (\nabla \phi_1 + \nabla \phi_2)  \\\\
-&= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_1) + (\nabla \phi_i \cdot \nabla \phi_2 + \nabla \phi_2) \\\\
-&= \sum_{j=1}^2 \nabla \phi_i \cdot \nabla \phi_j + \nabla \phi_j
+(\nabla \phi_i \cdot \sum_{j=1}^2 \nabla \phi_j) + \sum_{j=1}^2 \phi_j &= (\nabla \phi_i \cdot \left[ \nabla \phi_1 + \nabla \phi_2 \right]) + \left[ \phi_1 + \phi_2 \right] \\\\ 
+&= (\nabla \phi_i \cdot \nabla \phi_1 + \nabla \phi_i \cdot \nabla \phi_2) + (\phi_1 + \phi_2)  \\\\
+&= (\nabla \phi_i \cdot \nabla \phi_1 + \phi_1) + (\nabla \phi_i \cdot \nabla \phi_2 + \phi_2) \\\\
+&= \sum_{j=1}^2 \nabla \phi_i \cdot \nabla \phi_j + \phi_j
 \end{aligned}
 $$
 
@@ -538,9 +538,9 @@ Therefore, the weak form becomes
 
 $$
 \begin{aligned}
-\int_{\Omega} \sum_{j=1}^{N_{nodes}} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega  && \text{Factor sum} \\\\
-\sum_{j=1}^{N_{nodes}} \int_{\Omega} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \nabla \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Integral(Sums) == Sum(Integrals)} \\\\
-\sum_{j=1}^{N_{nodes}} \int_{\Omega} (\nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}) U_j^{(m)} \ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Factor the scalar } U_j^{(m)}
+\int_{\Omega} \sum_{j=1}^{N_{nodes}} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega  && \text{Factor sum} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} \nabla \phi_i \cdot  U_j^{(m)} \nabla \phi_j + \phi_i \frac{U_j^{(m)} \phi_j}{\Delta t}\ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Integral(Sums) == Sum(Integrals)} \\\\
+\sum_{j=1}^{N_{nodes}} \int_{\Omega} (\nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\phi_j}{\Delta t}) U_j^{(m)} \ d\Omega &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega && \text{Factor the scalar } U_j^{(m)}
 \end{aligned}
 $$
 
@@ -554,7 +554,7 @@ where
 
 $$
 \begin{aligned}
-A_{i,j} &= \int_{\Omega} \nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\nabla \phi_j}{\Delta t}\ d\Omega \\\\
+A_{i,j} &= \int_{\Omega} \nabla \phi_i \cdot \nabla \phi_j + \phi_i \frac{\phi_j}{\Delta t}\ d\Omega \\\\
 b_{i} &= \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
 \end{aligned}
 $$
@@ -623,6 +623,42 @@ $$
 
 where only $A_{11} = 1$ because $i = 1$ for $U_1 = 0$ and $A_{11}$ matches the first case since
 $j = i = 1$.
+
+To assemble the linear system, we observe that the entries of the linear system require an integral over the entire domain $\Omega$; however this is equivalent to a sum of integrals over individual elements. Thus, when a node $i$ does not lie on the boundary, the entries $A_{ij}$ and $b_i$ are defined by
+
+$$
+\begin{aligned}
+A_{ij} &= \frac{1}{\Delta t} \sum_{k=1}^{N_{ele}} \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j + \phi_i \phi_j\ d\Omega, \\\\
+b_i &= \frac{1}{\Delta t}\sum_{k=1}^{N_{ele}} \int_{e_k} vf + v U^{(m-1)}\ d\Omega,
+\end{aligned}
+$$
+
+where $N_{ele}$ is the number of elements in the mesh, and $e_k$ is the region occupied by element $k$.
+
+However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that $i, j \in {k_1, k_2, k_3}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{local}^{(k)}$, where $A_{local, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
+
+$$
+\begin{aligned}
+A_{local, i, j}^{(k)} &= \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j + \phi_i \phi_j\ d\Omega, \\\\
+&= \int_{e_k} (\frac{\partial \phi_{k_i}}{\partial x}\frac{\partial \phi_{k_j}}{\partial x} + \frac{\partial \phi_{k_i}}{\partial x}\frac{\partial \phi_{k_j}}{\partial y}) + \phi_{k_i} \phi_{k_j}\ d\Omega, \\\\
+&= \int_{\triangle} \left[(\frac{\partial \phi_{local,i}}{\partial x}\frac{\partial \phi_{local,j}}{\partial x} + \frac{\partial \phi_{local,i}}{\partial x}\frac{\partial \phi_{local,j}}{\partial y}) + \phi_{local,i}\  \phi_{local,j}\right]det(F)\ d\Omega_{\triangle},
+\end{aligned}
+$$
+
+where $\int_{\triangle}$ combined with $d\Omega_{\triangle}$ denotes integration over the canonical (reference) element, and $F$ is theJacobian matrix defined by
+
+$$
+\begin{aligned}
+F &= \begin{pmatrix}
+\partial x / \partial X & \partial x / \partial Y \\\\
+\partial y / \partial X & \partial y / \partial Y 
+\end{pmatrix} \\\\
+&= \begin{pmatrix}
+x_{k_2} - x_{k_1} & x_{k_3} - x_{k_1} \\\\
+y_{k_2} - y_{k_1} & y_{k_3} - y_{k_1}
+\end{pmatrix} 
+\end{aligned}
+$$
 
 # References
 

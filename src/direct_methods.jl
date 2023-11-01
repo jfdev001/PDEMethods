@@ -94,3 +94,7 @@ function cholesky_factorization(A)
     cholesky_factorization!(L)
     return L
 end
+
+function forward_substitution
+
+end
