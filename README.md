@@ -694,3 +694,5 @@ Engineering. 2004; 10(1).
 [12] Wikipedia: Integration by Parts. url: https://en.wikipedia.org/wiki/Integration_by_parts
 
 [13] Sullivan, T.J. "A brief introduction to weak formulations of PDEs and the finite element method". University of Warwick. url: https://warwick.ac.uk/fac/sci/hetsys/studentinformation/induction/mathsinduction/pde/pde.pdf
+
+[14] Sullivan, T.J (2015). "Introduction to Uncertainty Quantification". Springer.

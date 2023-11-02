@@ -18,6 +18,49 @@ function legendre(x, n)
 end
 
 """
+    legendre_recurrence(x, n)
+
+Compute legendre polynomial at point `x` of order `n_plus_1` using 
+recurrence relation and dynamic programming.
+
+# Examples
+```julia-repl
+julia> using PDEMethods: legendre_recurrence
+julia> using Plots
+julia> x = 2
+julia> @assert legendre_recurrence(x, 0) == 1
+julia> @assert legendre_recurrence(x, 1) == x
+julia> @assert legendre_recurrence(x, 2) == 0.5*(3*x^2 - 1)
+julia> @assert legendre_recurrence(x, 3) == 0.5*(5*x^3 - 3*x)
+julia> x_range = -1:0.01:1
+julia> myp = plot(
+    x_range, legendre_recurrence.(x_range, 0), label = "P_0", ylims = (-1, 1));
+julia> for order = 1:5
+            plot!(
+                myp, x_range, legendre_recurrence.(x_range, order), 
+                label="P_" * string(order))
+       end
+julia> myp
+```
+
+# References
+[1] Sullivan2015 pg. 140 "8.2: Recurrence Relations"
+"""
+function legendre_recurrence(x, N)
+    L = zeros(N+1)
+    L[1] = 1           # L[1] = L_0
+    if N >= 1 
+        L[2] = x       # L[2] = L_1
+        for i = 3:N+1  # L[3] = L_2
+            ix = i - 1 # Must use previously stored evaluations of L     
+            order_n = ix - 1  # Order L_n is the ix minus 1
+            L[i] = ((2*(order_n)+1)*x*L[ix] - order_n*L[ix-1])/(order_n+1)
+        end
+    end 
+    return L[end]
+end 
+
+"""
     hermite(x, n)
 
 Compute physicist's Hermite polynomial of order `n` at point `x` using 
