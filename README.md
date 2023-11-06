@@ -635,7 +635,7 @@ $$
 
 where $N_{ele}$ is the number of elements in the mesh, and $e_k$ is the region occupied by element $k$.
 
-However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that $i, j \in {k_1, k_2, k_3}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{local}^{(k)}$, where $A_{local, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
+However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{local}^{(k)}$, where $A_{local, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
 
 $$
 \begin{aligned}
@@ -658,6 +658,39 @@ x_{k_2} - x_{k_1} & x_{k_3} - x_{k_1} \\\\
 y_{k_2} - y_{k_1} & y_{k_3} - y_{k_1}
 \end{pmatrix} 
 \end{aligned}
+$$
+
+## Balancing Domain Decomposition by Constraints
+
+Notes for the paper "A Preconditioner for Substructuring based on constrained Energy Minimization" (Dohrman 2003).
+
+Given finite element equations
+
+$$
+\begin{equation}
+\mathbf{K}\vec{u} = \vec{b}
+\end{equation}
+$$
+
+essentially you will divide $\vec{u}$ into different degrees of freedom. Note that is a flattened degrees of freedom vector corresponding to nodes in the finite mesh as shown below.
+
+![1699087163091](image/README/1699087163091.png)
+
+Note that the domain $\Omega$ has been divded into substructures $\Omega = \{\Omega_i \}_{i = 1}^N$. As an example, consider N = 4, then the susbtructured finite element mesh with shared dofs in orange and internal dofs to each susbtucture in unique colors is as shown below. Note that for a substructure $\Omega_1$, it's dofs $u_1$ are the union of the blue nodes and the orange nodes on its boundary with $\Omega_2$ and $\Omega_3$.
+
+![1699087821950](image/README/1699087821950.png)
+
+Consider the matrix $C_i$ where each row of $C_i$ are coarse dof common to two more substructures. See below for just the coarse dofs and with all nodes labeled with a flat index. **TODO**: THIS IS NOT COMPLETE.
+
+![1699088356341](image/README/1699088356341.png)
+
+Then the corresponding matrix for four substructures
+
+$$
+C_1 = \begin{bmatrix}
+u_{4} & u_{11} & u_{18} & u_{25} \\
+u_{22} & u_{23} & u_{24} & u_{25} 
+\end{bmatrix}
 $$
 
 # References
