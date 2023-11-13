@@ -51,7 +51,7 @@ $$
 \begin{aligned}
 u(x + \Delta x) - u(x - \Delta x) &= [u(x) + u'(x)(\Delta x)] - [u(x) + u'(x)(-\Delta x)] \\
 &= 2u'(x)(\Delta x) \\
-u'(x) \approx \frac{u(x + \Delta x) - u(x - \Delta x)}{2 \Delta x}
+u'(x) &\approx \frac{u(x + \Delta x) - u(x - \Delta x)}{2 \Delta x}
 \end{aligned}
 $$
 
