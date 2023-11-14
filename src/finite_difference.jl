@@ -17,7 +17,7 @@ function centered_second_deriv_wrt_time(U, i, j, h)
 end 
 
 """
-    laplace_eq_init_arrays(grid_dim_n, lbc, rbc, tbc, bbc)
+    laplace_eq_init_arrays(;grid_dim_n=4, lbc=0, rbc=0, tbc=1, bbc=0)
 
 ```math
 \\begin{equation}
@@ -33,10 +33,22 @@ NOTE: The strange indexing arises from the fact that j is used to index
 rows while i is used to index columns in the physical domain (see fig 11.7 [1]),
 while j is used to index columns and i is used to index rows in the matrix code.
 
+# Examples
+```julia-repl
+julia> using PDEMethods: laplace_eq_init_arrays 
+julia> mesh, A, b = laplace_eq_init_arrays(grid_dim_n=4, lbc=0, rbc=0, tbc=1, bbc=0)
+julia> A \ b
+4-element Vector{Float64}:
+ 0.12499999999999999
+ 0.12499999999999999
+ 0.37499999999999994
+ 0.37499999999999994
+```
+
 # References
 [1] : Example 11.5 from Heath pg. 461
 """
-function laplace_eq_init_arrays(grid_dim_n::Int, lbc, rbc, tbc, bbc)
+function laplace_eq_init_arrays(;grid_dim_n::Int=5, lbc=0, rbc=0, tbc=0, bbc=0)
     # initialize mesh and boundary conditions
     mesh = zeros(grid_dim_n, grid_dim_n)
     mesh[:, 1] .= lbc   # left boundary condition
