@@ -96,10 +96,10 @@ function cholesky_factorization(A)
 end
 
 """   
-    forward_substitution(L::Matrix, b::Vector)
+    forward_substitution(L::Matrix, b_::Vector)
 
-Solve a system of equations with lower triangular system `L` and rhs `b` by
-forward substitution.
+Solve a system of equations `Ly = b` with lower triangular system `L` and 
+rhs `b` by forward substitution.
  
 # References
 [1] : Heath algorithm 2.1.
@@ -107,19 +107,60 @@ forward substitution.
 function forward_substitution(L::Matrix, b_::Vector)
     # L is square, so m, n doesn't really matter here
     m, n = size(L)
-    x = zeros(n)
+    y = zeros(n)
     b = copy(b_)
     for j = 1:n # loops over columns
         if L[j, j] == 0
             @show break
         end
-        x[j] = b[j]/L[j, j]
+        y[j] = b[j]/L[j, j]
         for i = (j + 1):n
-            b[i] = b[i] - L[i, j]*x[j]
+            b[i] = b[i] - L[i, j]*y[j]
         end
     end 
-    return x 
+    return y
 end
+
+
+"""
+    back_substitution(U::Matrix, y_::Vector)
+
+Solve a system `Ux = y` by backward substitution of the upper triangular
+system `U` and rhs vector `y_`.
+
+# References
+[1] : Heath algorithm 2.2, replaced `b` with `y_`.
+"""
+function back_substitution(U::Matrix, y_::Vector)
+    m, n = size(U)
+    y = copy(y_)
+    x = zeros(n)
+    for j = n:-1:1
+        U[j,j] == 0 && break
+        x[j] = y[j]/U[j, j]
+        for i = 1:j-1
+            y[i] = y[i] - U[i, j]*x[j]
+        end
+    end
+    return x
+end
+
+
+function back_substitution_matheq(U::Matrix, b::Vector) 
+    n, m = size(U) 
+    x = zeros(n)
+    x[n] = b[n]/U[n, n]
+    for i = n-1:-1:1
+        inner_sum = 0
+        for j = i+1:n
+            inner_sum += U[i, j]*x[j]
+        end
+        U[i, i] == 0 && break
+        x[i] = (b[i] - inner_sum)/U[i,i]
+    end
+    return x
+end 
+
 
 """
     forward_substitution_matheq(L::Matrix, b::Vector)
@@ -143,31 +184,3 @@ function forward_substitution_matheq(L::Matrix, b::Vector)
     return x
 end
 
-function back_substitution(U::Matrix, b_::Vector)
-    m, n = size(U)
-    b = copy(b_)
-    x = zeros(n)
-    for j = n:-1:1
-        U[j,j] == 0 && break
-        x[j] = b[j]/U[j, j]
-        for i = 1:j-1
-            b[i] = b[i] - U[i, j]*x[j]
-        end
-    end
-    return x
-end
-
-function back_substitution_matheq(U::Matrix, b::Vector) 
-    n, m = size(U) 
-    x = zeros(n)
-    x[n] = b[n]/U[n, n]
-    for i = n-1:-1:1
-        inner_sum = 0
-        for j = i+1:n
-            inner_sum += U[i, j]*x[j]
-        end
-        U[i, i] == 0 && break
-        x[i] = (b[i] - inner_sum)/U[i,i]
-    end
-    return x
-end 
