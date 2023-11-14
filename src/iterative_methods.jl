@@ -43,3 +43,44 @@ function jacobi_method(A::Matrix, b::Vector, x0::Vector, niters::Int)
     end
     return xkplus1
 end 
+
+
+"""
+    block_diagonal_matrix(A::Matrix, block_size::Int = 2)
+
+Return the block diagonal matrix of the matrix `A`.
+
+# Examples
+```julia-repl
+julia> using PDEMethods: laplace_eq_init_arrays, block_diagonal_matrix
+julia> mesh, A, b = laplace_eq_init_arrays(;grid_dim_n=4, lbc=0, rbc=0, tbc=1, bbc=0)
+julia> A
+4×4 Matrix{Float64}:
+  4.0  -1.0  -1.0   0.0
+ -1.0   4.0   0.0  -1.0
+ -1.0   0.0   4.0  -1.0
+  0.0  -1.0  -1.0   4.0
+julia> block_diagonal_matrix(A) 
+4×4 Matrix{Float64}:
+  4.0  -1.0   0.0   0.0
+ -1.0   4.0   0.0   0.0
+  0.0   0.0   4.0  -1.0
+  0.0   0.0  -1.0   4.0
+```
+
+# References
+[1] : https://phtournier.pages.math.cnrs.fr/5mm29/blockjacobi/
+"""
+function block_diagonal_matrix(A::Matrix, block_size::Int = 2)
+    m, n = size(A)
+    @assert m == n "square matrix"
+    M = zeros(m, n)
+    diagonal_col_ix = 1
+    for i in 1:m
+        diagonal_col_ix += (i != 1 && isodd(i))*block_size
+        for j in diagonal_col_ix:diagonal_col_ix+(block_size-1)
+           M[i, j] = A[i, j]
+        end
+    end
+    return M 
+end 
