@@ -44,6 +44,33 @@ function jacobi_method(A::Matrix, b::Vector, x0::Vector, niters::Int)
     return xkplus1
 end 
 
+"""
+    jacobi_method_dolean(A::Matrix, b::Vector, x0::Vector, niters::Int)
+
+Return solution to linear system of equation.
+
+# Examples
+```julia-repl
+julia> using PDEMethods: jacobi_method_dolean, laplace_eq_init_arrays
+julia> mesh, A, b = laplace_eq_init_arrays(grid_dim_n=4, lbc=0, rbc=0, tbc=1, bbc=0)
+julia> direct_u = A \\ b
+julia> jacobi_u = jacobi_method_dolean(A, b, zeros(length(b)), 100)
+julia> @assert all(direct_u .≈ jacobi_u) 
+```
+
+# References
+[1] : [The Jacobi Algorithm](https://www.youtube.com/watch?v=hcoikfp64bM&list=TLPQMTQxMTIwMjORT8jzlo-9xw&index=1)
+"""
+function jacobi_method_dolean(A::Matrix, b::Vector, x0::Vector, niters::Int)
+    xk = x0
+    D = block_diagonal_matrix(A)
+    D_inv = inv(D)
+    for k in 1:niters
+        rk = b - A*xk
+        xk = xk + D_inv*rk
+    end  
+    return xk
+end
 
 """
     block_diagonal_matrix(A::Matrix, block_size::Int = 2)
