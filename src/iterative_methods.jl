@@ -72,6 +72,11 @@ function jacobi_method_dolean(A::Matrix, b::Vector, x0::Vector, niters::Int)
     return xk
 end
 
+function block_jacobi_method(
+    A::Matrix, p_procs::Int, b::Vector, x0::Vector, niters::Int)
+    restriction_matrices = nothing
+end 
+
 """
     block_diagonal_matrix(A::Matrix, block_size::Int = 2)
 
