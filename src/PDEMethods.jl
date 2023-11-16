@@ -11,6 +11,6 @@ include("iterative_methods.jl")
 
 include("domain_decomposition/feti.jl")
 include("domain_decomposition/bddc.jl")
-include("domain_decomposition/schwarz.jl")
+include("domain_decomposition/schwarz_methods.jl")
 
 end # module PDEMethods
