@@ -729,3 +729,6 @@ Engineering. 2004; 10(1).
 [13] Sullivan, T.J. "A brief introduction to weak formulations of PDEs and the finite element method". University of Warwick. url: https://warwick.ac.uk/fac/sci/hetsys/studentinformation/induction/mathsinduction/pde/pde.pdf
 
 [14] Sullivan, T.J (2015). "Introduction to Uncertainty Quantification". Springer.
+
+[15] Dolean, V., Pierre, J., Nataf, F. (2015). "An Introduction to Domain 
+Decomposition Methods: Algorithms, Theory, and Parallel Implementation". (SIAM).

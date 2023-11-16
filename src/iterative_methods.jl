@@ -2,6 +2,8 @@
 # for the solution and successively improve it until the solution is as accurate 
 # as desired:
 # * jacobi
+# * jacobi based on block diagonal formula only (see Dolean2015)
+# * block jacobi 
 # * gauss-seidel
 # * conjugate gradient method (+ preconditioning?)
 
