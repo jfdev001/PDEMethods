@@ -3,7 +3,8 @@
 # * LU (Gaussian Elimination)
 # * Cholesky Factorization
 
-using LinearAlgebra: UnitLowerTriangular, UpperTriangular, LowerTriangular
+using LinearAlgebra: UnitLowerTriangular, UpperTriangular, LowerTriangular,
+    issymmetric, isposdef
 
 """
     lu_factorization!(A)
@@ -59,6 +60,7 @@ but does not, in general, have a unit diagonal.
 [1] : Heath Algorithm 2.7
 """
 function cholesky_factorization!(A)
+    @assert issymmetric(A) && isposdef(A) "`A` must be SPD"
     m, n = size(A)
     for k = 1:n
         A[k, k] = sqrt(A[k, k])
