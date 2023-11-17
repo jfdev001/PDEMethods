@@ -1,6 +1,6 @@
 # Domain decomposition techniques using Schwarz methods
 
-using LinearAlgebra: diag
+using LinearAlgebra: diag, I
 
 
 function additive_schwarz()
@@ -49,8 +49,23 @@ function extension(Rᵢ::Matrix{Bool})
     return transpose(Rᵢ)
 end
 
-function restriction_diagonal(Rᵢ)
-    m, n = size(Rᵢ)
-    begin_diag_col_ix = findfirst(row -> row == 1, Rᵢ[1, :])
-    return Rᵢ[1:m, begin_diag_col_ix:begin_diag_col_ix+m-1]
+"""
+    partition_of_unity_matrices(Ω_ids::Vector{Vector{Int}}) 
+
+Return a vector of matrices corresponding to the partition of unity.
+
+TODO: How does this generalize to 2D and 3D?
+
+# References
+[1] : Ch. 1.3.1 from Dolean2015.
+"""
+function partition_of_unity_matrices(Ω_ids::Vector{Vector{Int}})
+    Ds = [Matrix(1.0I, length(Ωᵢ), length(Ωᵢ)) for Ωᵢ in Ω_ids]
+    for (D, Ωᵢ) in zip(Ds, Ω_ids)
+        for (local_ix, global_ix) in enumerate(Ωᵢ)
+            ix_in_n_domains = sum([global_ix in domain for domain in Ω_ids])
+            D[local_ix, local_ix] = 1/ix_in_n_domains
+        end
+    end
+    return Ds 
 end  
