@@ -76,6 +76,12 @@ end
 
 function block_jacobi_method(
     A::Matrix, p_procs::Int, b::Vector, x0::Vector, niters::Int)
+
+    throw("notimplementederror")
+    m, n = size(A)
+    @assert m >= p_procs
+    remaining_rows = mod(m, p_procs)
+    
     restriction_matrices = nothing
 end 
 
