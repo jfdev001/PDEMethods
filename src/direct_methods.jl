@@ -90,6 +90,18 @@ end
     cholesky_factorization(A)
 
 Return `L` from OOP cholesky factorization.
+
+# Examples
+```julia-repl
+julia> using PDEMethods: cholesky_factorization, laplace_eq_init_arrays
+julia> using PDEMethods: forward_substitution, back_substitution
+julia> mesh, A, b = laplace_eq_init_arrays()
+julia> L = cholesky_factorization(A) 
+julia> Lᵀ = transpose(L)              # LLᵀx = b
+julia> y = forward_substitution(L, b) # L y = b === L \\ b
+julia> x = back_substitution(Lᵀ, y)   # Lᵀx = y === Lᵀ \\ y 
+julia> @assert all(x .≈ A \\ b )
+```
 """
 function cholesky_factorization(A) 
     L = copy(A)
@@ -106,7 +118,7 @@ rhs `b` by forward substitution.
 # References
 [1] : Heath algorithm 2.1.
 """
-function forward_substitution(L::Matrix, b_::Vector)
+function forward_substitution(L::AbstractMatrix, b_::Vector)
     # L is square, so m, n doesn't really matter here
     m, n = size(L)
     y = zeros(n)
@@ -133,7 +145,7 @@ system `U` and rhs vector `y_`.
 # References
 [1] : Heath algorithm 2.2, replaced `b` with `y_`.
 """
-function back_substitution(U::Matrix, y_::Vector)
+function back_substitution(U::AbstractMatrix, y_::Vector)
     m, n = size(U)
     y = copy(y_)
     x = zeros(n)
@@ -148,7 +160,7 @@ function back_substitution(U::Matrix, y_::Vector)
 end
 
 
-function back_substitution_matheq(U::Matrix, b::Vector) 
+function back_substitution_matheq(U::AbstractMatrix, b::Vector) 
     n, m = size(U) 
     x = zeros(n)
     x[n] = b[n]/U[n, n]
@@ -169,7 +181,7 @@ end
 
 Direct conversion of equation in Heath pg. 64 describing forward substitution.
 """
-function forward_substitution_matheq(L::Matrix, b::Vector)
+function forward_substitution_matheq(L::AbstractMatrix, b::Vector)
     n, m = size(L) # n == nrows based on eq, tho n == m because square anyway
     x = zeros(n) 
     x[1] = b[1]/L[1, 1]
