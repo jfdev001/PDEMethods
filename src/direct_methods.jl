@@ -4,7 +4,7 @@
 # * Cholesky Factorization
 
 using LinearAlgebra: UnitLowerTriangular, UpperTriangular, LowerTriangular,
-    issymmetric, isposdef
+    issymmetric, isposdef, ⋅, norm
 
 """
     lu_factorization!(A)
@@ -108,6 +108,62 @@ function cholesky_factorization(A)
     cholesky_factorization!(L)
     return L
 end
+
+"""
+    gram_schmidt_orthogonalization(A_)
+
+Return `Q` and `R` matrices from Gram-Schmidt orthogonalization.
+
+# Examples
+```julia-repl
+julia> using PDEMethods: gram_schmidt_orthogonalization 
+julia> A = [
+       1 0 0
+       0 1 0
+       0 0 1
+       −1 1 0
+       −1 0 1
+       0 −1 1.]
+julia> Q, R = gram_schmidt_orthogonalization(A)
+julia> Q_known = [
+       0.5774 0.2041 0.3536
+       0 0.6124 0.3536
+       0 0 0.7071
+       −0.5774 0.4082 0
+       −0.5774 −0.2041 0.3536
+       0 −0.6124 0.3536]
+julia> R_known = [
+       1.7321 −0.5774 −0.5774
+       0 1.6330 −0.8165
+       0 0 1.4142
+       0 0 0
+       0 0 0
+       0 0 0]
+julia> @assert all(isapprox.(Q, Q_known, atol=1e-4))
+julia> @assert all(isapprox.(R, R_known, atol=1e-4))
+```
+
+# References
+[1] : Heath algorithm 3.3.
+"""
+function gram_schmidt_orthogonalization(A_)
+    A = copy(A_)
+    m, n = size(A)
+    Q = zeros(m, n)
+    R = zeros(m, n)
+
+    for k = 1:n
+        R[k, k] = norm(A[:, k])
+        R[k, k] == 0 && break
+        Q[:, k] = A[:, k]/R[k, k]
+        for j = k+1:n
+            R[k, j] = transpose(Q[:, k]) ⋅ A[:, j] 
+            A[:, j] = A[:, j] - R[k, j]*Q[:, k]
+        end
+    end
+
+    return Q, R
+end 
 
 """   
     forward_substitution(L::Matrix, b_::Vector)
