@@ -147,14 +147,17 @@ function block_diagonal_matrix(A::Matrix, block_size::Int = 2)
 end 
 
 """
-    gauss_seidel_matheq(A::Matrix, x0::Vector, b::Vector, niters::Int)
+    gauss_seidel_matheq(A::Matrix, b::Vector, x0::Vector, niters::Int; ω = 1.0)
 
-Return solution to linear system `Ax = b` via Gauss-Seidel method.
+Return solution to linear system `Ax = b` via Gauss-Seidel (ω = 1., or SOR
+for ω != 1 and ω ∈ (0, 2)) method.
 
 # References
 [1] : Ch. 11.5.3 Heath.
 """
-function gauss_seidel_matheq(A::Matrix, b::Vector, x0::Vector, niters::Int)
+function gauss_seidel_matheq(
+    A::Matrix, b::Vector, x0::Vector, niters::Int; ω = 1.0)
+    @assert 0 < ω < 2
     x = x0
     m, n = size(A)
     for k in 1:niters
@@ -169,7 +172,7 @@ function gauss_seidel_matheq(A::Matrix, b::Vector, x0::Vector, niters::Int)
                 xk_sum += A[i, j]*x[j]
             end 
 
-            x[i] = (b[i] - xkplus1_sum - xk_sum)/A[i,i]
+            x[i] = x[i] + ω*((b[i] - xkplus1_sum - xk_sum)/A[i,i] - x[i])
         end
     end
     return x
