@@ -1,5 +1,7 @@
+using BlockDiagonals: BlockDiagonal
+
 """
-    restriction(N::Int, i::Int, Ω_ids::Vector{Vector{Int}})::Matrix{Bool}
+    restriction(N::Int, i::Int, Ω_ids::Vector{Vector{Int}})::AbstractMatrix{Bool}
 
 Return boolean matrix used for indexing a domain with `N` dofs
 to the `i` domain `Ω` with subdomain indices `Ω_ids`. This function is
@@ -10,7 +12,7 @@ however, this function matches writings in papers and textbooks.
 [1] : Ch. 1.3. from Dolean2015
 """
 function restriction(
-    N::Int, i::Int, Ω_ids::Vector{Vector{Int}})::Matrix{Bool}
+    N::Int, i::Int, Ω_ids::Vector{Vector{Int}})::AbstractMatrix{Bool}
     Ωᵢ = Ω_ids[i]
     Nᵢ = length(Ωᵢ) 
     Rᵢ = zeros(Bool, Nᵢ, N)
@@ -32,12 +34,12 @@ function extension(N::Int, i::Int, Ω_ids::Vector{Vector{Int}})
     return transpose(restriction(N, i, Ω_ids))
 end
 
-function extension(Rᵢ::Matrix{Bool})
+function extension(Rᵢ::AbstractMatrix{Bool})
     return transpose(Rᵢ)
 end
 
 """
-    partition_of_unity_matrices(Ω_ids::Vector{Vector{Int}}) 
+    partition_of_unity_matrices_Ds(Ω_ids::Vector{Vector{Int}}) 
 
 Return a vector of matrices corresponding to the partition of unity.
 
@@ -46,9 +48,9 @@ TODO: How does this generalize to 2D and 3D?
 # References
 [1] : Ch. 1.3.1 from Dolean2015.
 """
-function partition_of_unity_matrices(Ω_ids::Vector{Vector{Int}})
+function partition_of_unity_matrices_Ds(Ω_ids::Vector{Vector{Int}})
     # Diagonal matrices such that a 1 indicates "possession" of that dof on Ωᵢ
-    Ds = [Matrix(1.0I, length(Ωᵢ), length(Ωᵢ)) for Ωᵢ in Ω_ids]
+    Ds = [AbstractMatrix(1.0I, length(Ωᵢ), length(Ωᵢ)) for Ωᵢ in Ω_ids]
 
     # iterate through diagonal matrices and domains 
     # and update the diagonal matrices such that an entry Dᵢⱼ corresponds to
@@ -61,3 +63,28 @@ function partition_of_unity_matrices(Ω_ids::Vector{Vector{Int}})
     end
     return Ds 
 end  
+
+"""
+    nicolaide_coarse_space(Ω_ids::Vector{Vector{Int}})::AbstractMatrix
+
+Return `Z` corresponding to the "slow" modes of some preconditioned matrix
+for a domain decomposition with partition of unity matrices `Ds`.
+
+# References
+[1] : Ch. 4.2 Dolean2015.
+"""
+function nicolaide_coarse_space(Ω_ids::Vector{Vector{Int}})
+    N_dofs = length(Set(vcat(Ω_ids...))) # probs expensive, whatevs
+    Zs = []
+    Ds = partition_of_unity_matrices_Ds(Ω_ids)
+    for i in 1:length(Ω_ids) 
+        Rᵢ  = restriction(N_dofs, i, Ω_ids)
+        Nᵢ, N = size(Rᵢ)    # number dofs in Ωᵢ by total number of dofs
+        Rᵢᵀ = transpose(Rᵢ) # extension operator
+        Dᵢ  = Ds[i]
+        Zᵢ  = Rᵢᵀ*Dᵢ*Rᵢ*ones(N)
+        push!(Zs, Zᵢ)
+    end
+    Z = BlockDiagonal(Zs) 
+    return Z
+end
