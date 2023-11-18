@@ -50,7 +50,7 @@ TODO: How does this generalize to 2D and 3D?
 """
 function partition_of_unity_matrices_Ds(Ω_ids::Vector{Vector{Int}})
     # Diagonal matrices such that a 1 indicates "possession" of that dof on Ωᵢ
-    Ds = [AbstractMatrix(1.0I, length(Ωᵢ), length(Ωᵢ)) for Ωᵢ in Ω_ids]
+    Ds = [Matrix(1.0I, length(Ωᵢ), length(Ωᵢ)) for Ωᵢ in Ω_ids]
 
     # iterate through diagonal matrices and domains 
     # and update the diagonal matrices such that an entry Dᵢⱼ corresponds to
@@ -74,17 +74,17 @@ for a domain decomposition with partition of unity matrices `Ds`.
 [1] : Ch. 4.2 Dolean2015.
 """
 function nicolaide_coarse_space(Ω_ids::Vector{Vector{Int}})
-    N_dofs = length(Set(vcat(Ω_ids...))) # probs expensive, whatevs
-    Zs = []
-    Ds = partition_of_unity_matrices_Ds(Ω_ids)
+    N_dofs = length(Set(vcat(Ω_ids...))) # could be precomputed
+    N_subdomains = length(Ω_ids)
+    Z  = zeros(N_dofs*2, N_subdomains)
+    Ds = partition_of_unity_matrices_Ds(Ω_ids) # could be precomputed
     for i in 1:length(Ω_ids) 
-        Rᵢ  = restriction(N_dofs, i, Ω_ids)
+        Rᵢ  = restriction(N_dofs, i, Ω_ids) # could be precomputed
         Nᵢ, N = size(Rᵢ)    # number dofs in Ωᵢ by total number of dofs
         Rᵢᵀ = transpose(Rᵢ) # extension operator
         Dᵢ  = Ds[i]
         Zᵢ  = Rᵢᵀ*Dᵢ*Rᵢ*ones(N)
-        push!(Zs, Zᵢ)
+        Z[i:i+N-1, i] .= Zᵢ
     end
-    Z = BlockDiagonal(Zs) 
-    return Z
+    return Z 
 end
