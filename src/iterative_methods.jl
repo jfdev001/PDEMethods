@@ -124,3 +124,32 @@ function block_diagonal_matrix(A::Matrix, block_size::Int = 2)
     end
     return M 
 end 
+
+"""
+    gauss_seidel_matheq(A::Matrix, x0::Vector, b::Vector, niters::Int)
+
+Return solution to linear system `Ax = b` via Gauss-Seidel method.
+
+# References
+[1] : Ch. 11.5.3 Heath.
+"""
+function gauss_seidel_matheq(A::Matrix, x0::Vector, b::Vector, niters::Int)
+    x = x0
+    m, n = size(A)
+    for k in 1:niters
+        for i in 1:n
+            xkplus1_sum = 0
+            for j in 1:i-1
+                xkplus1_sum += A[i, j]*x[j]
+            end
+        
+            xk_sum = 0
+            for j in i+1:n
+                xk_sum += A[i, j]*x[j]
+            end 
+
+            x[i] = (b[i] - xkplus1_sum - xk_sum)/A[i,i]
+        end
+    end
+    return x
+end 
