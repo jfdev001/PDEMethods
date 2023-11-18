@@ -133,7 +133,7 @@ Return solution to linear system `Ax = b` via Gauss-Seidel method.
 # References
 [1] : Ch. 11.5.3 Heath.
 """
-function gauss_seidel_matheq(A::Matrix, x0::Vector, b::Vector, niters::Int)
+function gauss_seidel_matheq(A::Matrix, b::Vector, x0::Vector, niters::Int)
     x = x0
     m, n = size(A)
     for k in 1:niters
@@ -151,5 +151,25 @@ function gauss_seidel_matheq(A::Matrix, x0::Vector, b::Vector, niters::Int)
             x[i] = (b[i] - xkplus1_sum - xk_sum)/A[i,i]
         end
     end
+    return x
+end 
+
+
+"""
+    gauss_seidel_matrix(A::Matrix, b::Vector, x0::Vector, niters::Int)
+
+Return solution to linear system `Ax = b` via matrix Gauss-Seidel method.
+
+# References
+[1] : Ch. 11.5.3 Heath.
+"""
+function gauss_seidel_matrix(A::Matrix, b::Vector, x0::Vector, niters::Int)
+    L, U = lu_factorization(A)
+    D = block_diagonal_matrix(A)
+    D_plus_L_inv = inv(D + L)
+    x = x0
+    for k in 1:niters
+        x = D_plus_L_inv*(b - U*x)
+    end     
     return x
 end 
