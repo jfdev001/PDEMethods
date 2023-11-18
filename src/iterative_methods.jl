@@ -64,10 +64,13 @@ julia> @assert all(direct_u .≈ jacobi_u)
 
 # References
 [1] : [The Jacobi Algorithm](https://www.youtube.com/watch?v=hcoikfp64bM&list=TLPQMTQxMTIwMjORT8jzlo-9xw&index=1)
+[2] : Ch.1.2 Dolean2015
 """
 function jacobi_method_dolean(A::Matrix, b::Vector, x0::Vector, niters::Int)
     xk = x0
-    D = block_diagonal_matrix(A)
+    #D = block_diagonal_matrix(A)
+    D_vec = diag(A)
+    D = diagm(D_vec)
     D_inv = inv(D)
     for k in 1:niters
         rk = b - A*xk
