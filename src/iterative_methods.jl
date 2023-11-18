@@ -7,6 +7,8 @@
 # * gauss-seidel
 # * conjugate gradient method (+ preconditioning?)
 
+using LinearAlgebra: LowerTriangular, UpperTriangular, diag, diagm, diagind
+
 """
     jacobi_method(A::Matrix, b::Vector, x0::Vector, niters::Int)
 
@@ -72,6 +74,22 @@ function jacobi_method_dolean(A::Matrix, b::Vector, x0::Vector, niters::Int)
         xk = xk + D_inv*rk
     end  
     return xk
+end
+
+function jacobi_method_matrix_form_solver(
+    A::Matrix, b::Vector, x0::Vector, niters::Int)
+    x = x0
+    D_vec = diag(A)
+    D = diagm(D_vec)
+    D_inv = inv(D)
+    L = copy(LowerTriangular(A)) # constructs a view, copy to avoid change A
+    L[diagind(L)] .= 0
+    U = copy(UpperTriangular(A)) # constructs a view, copy to avoid change A
+    U[diagind(U)] .= 0
+    for k in 1:niters
+        x = D_inv*(b - (L + U)*x) 
+    end
+    return x
 end
 
 function block_jacobi_method(
@@ -156,20 +174,36 @@ end
 
 
 """
-    gauss_seidel_matrix(A::Matrix, b::Vector, x0::Vector, niters::Int)
+    gauss_seidel_matrix_form_solver(
+        A::Matrix, b::Vector, x0::Vector, niters::Int)
 
 Return solution to linear system `Ax = b` via matrix Gauss-Seidel method.
 
 # References
 [1] : Ch. 11.5.3 Heath.
 """
-function gauss_seidel_matrix(A::Matrix, b::Vector, x0::Vector, niters::Int)
-    L, U = lu_factorization(A)
-    D = block_diagonal_matrix(A)
+function gauss_seidel_matrix_form_solver(
+    A::Matrix, b::Vector, x0::Vector, niters::Int)
+    # Get diagonal entries of A, store in matrix
+    D_vec = diag(A)
+    D = diagm(D_vec)
+
+    # Get the strict lower and upper triangular matrices
+    L = LowerTriangular(A)
+    L[diagind(L)] .= 0
+    U = UpperTriangular(A)
+    U[diagind(U)] .= 0
+
+    # Compute the inverse of D + L ahead of time
     D_plus_L_inv = inv(D + L)
+
+    # initialize the guess
     x = x0
+
+    # gauss seidel iterations
     for k in 1:niters
         x = D_plus_L_inv*(b - U*x)
     end     
+
     return x
 end 
