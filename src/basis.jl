@@ -1,7 +1,7 @@
 # Basis (i.e., shape or test funcs ϕⱼ) functions for FEMs
 
 """
-    ϕ_piecewise_linear(x, j::Int, xs::Vector)
+    ϕ_piecewise_linear(x::Real, j::Int, xs::Vector{Real})
 
 TODO: 2D and 3D.
 
@@ -20,7 +20,7 @@ julia> plot!(p, xs, ϕₖ, label = "ϕₖ")
 # References
 [1] : Whiteley Ch. 3.3.2.1
 """
-function ϕ_piecewise_linear(x, j::Int, xs::Vector)
+function ϕ_piecewise_linear(x::Real, j::Int, xs::Vector{Real})
     k = length(xs) # number of nodes in the mesh
     N = k - 1      # number of elements in mesh
    
