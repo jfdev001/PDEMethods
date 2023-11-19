@@ -3,6 +3,7 @@ module PDEMethods
 include("polynomials.jl")
 include("quadrature.jl")
 
+include("basis.jl")
 include("finite_difference.jl")
 include("fem_mesh.jl")
 
