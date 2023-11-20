@@ -155,7 +155,8 @@ u_{11}  & u_{12}  & u_{13} & \\cdots \\\\
 \\end{bmatrix}
 ```
 
-TODO: How to evaluate `f` at nodal points?
+TODO: Determining Δx and Δy from provided gird Lx, Ly, nx, and ny...
+TODO: determine Dx coefficient locations in differentiation matrix. 
 
 # References
 [1] : Equation (84) from p. 37 of Pawar2019.
@@ -202,12 +203,9 @@ function poisson_eq_init_arrays(
     A[sub_diag_ind] .= D_y
 
     # Handle u_{i-1, j} and u_{i+1, j} coefficients
-
-    for j in 2:n_nodes-1 
-        throw("notimplemented")
+    for j in 1:n_nodes 
         for i in 1:n_nodes
-            A[i-1, j] = D_x
-            A[i+1, j] = D_x
+               
         end
     end
     
