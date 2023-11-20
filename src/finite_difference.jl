@@ -161,7 +161,7 @@ TODO: How to evaluate `f` at nodal points?
 [1] : Equation (84) from p. 37 of Pawar2019.
 """
 function poisson_eq_init_arrays(
-    f = (x, y) -> -8*π^2*sin(2*π*x)*sin(2*π*y) - 8*π^2*sin(32*π*x)*sin(32*π*y); 
+    f = poisson_f; 
     grid_dim_n::Int=4, lbc=0, rbc=0, tbc=1, bbc=0)
 
     # initialize mesh and boundary conditions
@@ -240,3 +240,39 @@ function poisson_eq_init_arrays(
     end
     return mesh, A, b 
 end 
+
+"""
+    poisson_exact_u(x, y)
+
+Return exact solution to poisson equation with [`poisson_f`](@ref) as `f`
+evaluated at coordinates `x` and `y`.
+
+# Examples
+```julia-repl
+julia> using PDEMethods, Plots
+julia> x = y = LinRange(0, 1, 512)
+julia> u = @. PDEMethods.poisson_exact_u(x', y)
+julia> u_mat = zeros(length(x), length(y)) # same result as above
+julia> for (i, xi) in enumerate(x)
+         for (j, yj) in enumerate(y)
+           u_mat[i, j] = PDEMethods.poisson_exact_u(xi, yj)
+         end
+       end
+julia> contourf(x, y, u, levels=20, color=:turbo)
+julia> @assert all(u .≈ u_mat)
+```
+
+# References
+[1] : Equation 85 from Pawar2019.
+"""
+poisson_exact_u(x, y) = sin(2*π*x)*sin(2*π*y) + 1/16^2*sin(32*π*x)*sin(32*π*y)
+
+"""
+    poisson_f(x, y)
+
+Return function `f` evaluation for the coordinates `x` and `y`.
+
+# References
+[1] : Equation 86 from Pawar2019.
+"""
+poisson_f(x, y) = -8*π^2*sin(2*π*x)*sin(2*π*y) - 8*π^2*sin(32*π*x)*sin(32*π*y)
