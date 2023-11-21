@@ -163,10 +163,15 @@ TODO: determine Dx coefficient locations in differentiation matrix.
 """
 function poisson_eq_init_arrays(
     f = poisson_f; 
-    grid_dim_n::Int=4, lbc=0, rbc=0, tbc=1, bbc=0)
+    Lxy=1, grid_dim_n, lbc=0, rbc=0, tbc=1, bbc=0)
 
-    # initialize mesh and boundary conditions
-    mesh = zeros(grid_dim_n, grid_dim_n)
+    throw(
+        "notimplemented... still annoying grid stuff... try ModeliingToolkit")
+    Δx = Δy = Lxy / grid_dim_n 
+
+    # initialize mesh and boundary conditions -- btw the mesh is the 
+    # same as the solution vector u but includes boundaries 
+    mesh = zeros(n, n)
     mesh[:, 1] .= lbc   # left boundary condition
     mesh[:, end] .= rbc # right boundary condition
     mesh[1, :] .= tbc   # top boundary condition
@@ -183,9 +188,6 @@ function poisson_eq_init_arrays(
     
     # Construct differential coeffecients from second order central difference
     # of poisson equation 
-    Δx = 1 # h=(xL - xR)/n, e.g.,xL=10, xR=0, h = 10-0/10 = 1, Driscol fig 10.3.1 
-    Δy = 1
-
     D_xy = -2/Δx^2 + -2/Δy^2  # D_xy * u_{ij}
     D_x  = 1/Δx^2             # D_x  * (u_{i+1,j} + u_{i-1, j}) 
     D_y  = 1/Δy^2             # D_y  * (u_{i, j+1} + u_{i, j-1})
@@ -203,33 +205,45 @@ function poisson_eq_init_arrays(
     A[sub_diag_ind] .= D_y
 
     # Handle u_{i-1, j} and u_{i+1, j} coefficients
-    for j in 1:n_nodes 
-        for i in 1:n_nodes
-               
+    u = mesh 
+    A_local = [D_y D_xy D_y D_x D_x] 
+    for i in 1:n_interior_points_in_one_direction 
+        for j in 1:n_interior_points_in_one_direction
+            u_ij = u[i, j]
+            on_row_boundary = i+1 == n_interior_points_in_one_direction+1 || 
+                i-1 == 0
+            if on_row_boundary 
+                 
+            end 
         end
     end
     
     # Use the mesh to determine how the function `f` evaluates ...
     A_row = 1 # flat index  
-    boundary_node_domain = (0, n_interior_points_in_one_direction+1)
     for j in 1:n_interior_points_in_one_direction 
         for i in 1:n_interior_points_in_one_direction
  
             b[A_row] += f(i, j)
 
-            # TODO: Is this logic valid??? It's based on 11.3.1 essentially
-            # of Heath
+            # TODO: Is this logic valid??? 
+            # It's based on 11.3.1 essentially of Heath
             # left boundary
             if i-1 == 0
                 b[A_row] -= lbc/Δx^2
+            end 
+            
             # right boundary
-            elseif i+1 == n_interior_points_in_one_direction+1
+            if i+1 == n_interior_points_in_one_direction+1
                 b[A_row] -= rbc/Δx^2
+            end 
+
             # bottom boundary
-            elseif j-1 == 0
+            if j-1 == 0
                 b[A_row] -= bbc/Δy^2
+            end 
+
             # top boundary
-            else
+            if j+1 == n_interior_points_in_one_direction+1
                 b[A_row] -= tbc/Δy^2
             end
 
