@@ -160,22 +160,26 @@ TODO: determine Dx coefficient locations in differentiation matrix.
 
 # References
 [1] : Equation (84) from p. 37 of Pawar2019.
-"""
+
 function poisson_eq_init_arrays(
     f = poisson_f; 
-    Lxy=1, grid_dim_n, lbc=0, rbc=0, tbc=1, bbc=0)
+    Lxy=1, grid_dim_n=4, lbc=0, rbc=0, tbc=0, bbc=0)
+    
+    if lbc != 0 || rbc !=0 || tbc != 0 || bbc != 0 
+        throw("only 0 bcs are supported currently")
+    end
 
-    throw(
-        "notimplemented... still annoying grid stuff... try ModeliingToolkit")
     Δx = Δy = Lxy / grid_dim_n 
+    @show Δx
 
     # initialize mesh and boundary conditions -- btw the mesh is the 
     # same as the solution vector u but includes boundaries 
-    mesh = zeros(n, n)
+    mesh = zeros(grid_dim_n, grid_dim_n)
     mesh[:, 1] .= lbc   # left boundary condition
     mesh[:, end] .= rbc # right boundary condition
     mesh[1, :] .= tbc   # top boundary condition
     mesh[end, :] .= bbc # bottom boundary condition
+    @show size(mesh)
 
     # initialize interior point matrices (i.e., differential matrix
     # and rhs vector
@@ -204,53 +208,78 @@ function poisson_eq_init_arrays(
     A[sup_diag_ind] .= D_y
     A[sub_diag_ind] .= D_y
 
+    @show A
+
     # Handle u_{i-1, j} and u_{i+1, j} coefficients
+    # and populate b
+    throw("notimplemented")
     u = mesh 
+    A_row = 1 # flat index  
     A_local = [D_y D_xy D_y D_x D_x] 
-    for i in 1:n_interior_points_in_one_direction 
+    for i in 2:n_interior_points_in_one_direction 
         for j in 1:n_interior_points_in_one_direction
             u_ij = u[i, j]
-            on_row_boundary = i+1 == n_interior_points_in_one_direction+1 || 
-                i-1 == 0
-            if on_row_boundary 
-                 
-            end 
+            
+            A_row += 1
         end
     end
     
     # Use the mesh to determine how the function `f` evaluates ...
-    A_row = 1 # flat index  
-    for j in 1:n_interior_points_in_one_direction 
-        for i in 1:n_interior_points_in_one_direction
+    return mesh, A, b 
+end 
+"""
+
+"""
+
+Return poisson system of linear equations given a function `f` for the 
+right hand side, the domain of x and y, as well as the number of grid points
+`nx` (for which `ny = nx = h`). Thus, `grid[nx, ny]` is a corner boundary
+(follows ref [2] notation).
+
+# References
+[1] : Eq (84) from Pawar2019
+[2] : Parts 3 & 4 from https://www.youtube.com/playlist?list=PLcqHTXprNMIN_fw1BIJDNuaX4nX3FHZ9y
+"""
+function poisson_eq_init_arrays(
+    f = poisson_f; 
+    xR = 1, xL = 0,
+    yR = 1, yL = 0, 
+    nx = 5)
+
+    # initialize grid 
+    ny = nx
+    Δx = (xR - xL) / (nx - 1) 
+    Δy = (yR - yL) / (ny - 1)
  
-            b[A_row] += f(i, j)
-
-            # TODO: Is this logic valid??? 
-            # It's based on 11.3.1 essentially of Heath
-            # left boundary
-            if i-1 == 0
-                b[A_row] -= lbc/Δx^2
-            end 
-            
-            # right boundary
-            if i+1 == n_interior_points_in_one_direction+1
-                b[A_row] -= rbc/Δx^2
-            end 
-
-            # bottom boundary
-            if j-1 == 0
-                b[A_row] -= bbc/Δy^2
-            end 
-
-            # top boundary
-            if j+1 == n_interior_points_in_one_direction+1
-                b[A_row] -= tbc/Δy^2
-            end
-
-            A_row += 1  
+    # wut...
+    mesh = Matrix(undef, nx, ny)
+    x = xL:Δx:xR
+    y = yL:Δy:yR
+    for (i, xi) in enumerate(x)
+        for (j, yj) in enumerate(y)
+            mesh[i, j] = (xi, yj)
         end
     end
-    return mesh, A, b 
+    
+    # number of interior points for each dimension
+    nx_int = nx - 2
+    ny_int = ny - 2
+    n_eqs = nx_int * ny_int # number of equations/unknowns
+
+    # differentiation matrix 
+    D_xy = (-2/Δx^2) + (-2/Δy^2)
+    D_x = 1/Δx^2
+    D_y = 1/Δy^2
+
+    A = diagm(D_xy*ones(n_eqs)) # u_{ij}
+    A[diagind(A, 1)] .= D_y     # u_{i, j+1}
+    A[diagind(A, -1)] .= D_y    # u_{i, j-1}
+
+    A[diagind(A, ny - 1)] .= D_x
+    A[diagind(A, -(ny - 1))] .= D_x
+
+
+    return mesh, A 
 end 
 
 """
