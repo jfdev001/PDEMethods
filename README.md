@@ -660,7 +660,14 @@ y_{k_2} - y_{k_1} & y_{k_3} - y_{k_1}
 \end{aligned}
 $$
 
-## Balancing Domain Decomposition by Constraints
+## Domain Decomposition Methods
+
+Overarching questions/observations:
+
+* How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
+  * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
+
+### Balancing Domain Decomposition by Constraints
 
 Notes for the paper "A Preconditioner for Substructuring based on constrained Energy Minimization" (Dohrman 2003).
 
@@ -676,7 +683,7 @@ essentially you will divide $\vec{u}$ into different degrees of freedom. Note th
 
 ![1699087163091](image/README/1699087163091.png)
 
-Note that the domain $\Omega$ has been divded into substructures $\Omega = \{\Omega_i \}_{i = 1}^N$. As an example, consider N = 4, then the susbtructured finite element mesh with shared dofs in orange and internal dofs to each susbtucture in unique colors is as shown below. Note that for a substructure $\Omega_1$, it's dofs $u_1$ are the union of the blue nodes and the orange nodes on its boundary with $\Omega_2$ and $\Omega_3$.
+Note that the domain $\Omega$ has been divded into substructures $\Omega = \{\Omega_i \}_{i = 1}^N$. As an example, consider N = 4, then the substructured finite element mesh with shared dofs in ${\color{orange}\text{orange}}$ and internal dofs to each substructure in unique colors is as shown below. Note that for a substructure $\Omega_1$, it's dofs $u_1$ are the union of the $\color{blue}\text{blue}$ nodes and the ${\color{orange}\text{orange}}$ nodes on its boundary with $\Omega_2$ and $\Omega_3$.
 
 ![1699087821950](image/README/1699087821950.png)
 
@@ -730,5 +737,9 @@ Engineering. 2004; 10(1).
 
 [14] Sullivan, T.J (2015). "Introduction to Uncertainty Quantification". Springer.
 
-[15] Dolean, V., Pierre, J., Nataf, F. (2015). "An Introduction to Domain 
+[15] Dolean, V., Pierre, J., Nataf, F. (2015). "An Introduction to Domain
 Decomposition Methods: Algorithms, Theory, and Parallel Implementation". (SIAM).
+
+[16] Smith, B. F., Bjorstad, P.E., Gropp, W.D. (1996). "Domain Decomposition
+Parallel Multilevel Methods for Elliptic Partial Differential Equations."
+Cambridge University Press.
