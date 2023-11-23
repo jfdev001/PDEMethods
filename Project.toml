@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [deps]
 BlockDiagonals = "0a1fb500-61f7-11e9-3c65-f5ef3456f9f0"
+DomainSets = "5b8099bc-c8ec-5219-889f-1d9e522a28bf"
 FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 Ferrite = "c061ca5d-56c9-439f-9c0e-210fe06d3992"
 Gridap = "56d4f2e9-7ea1-5844-9cf6-b9c51ca7ce8e"
