@@ -667,6 +667,35 @@ Overarching questions/observations:
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
   * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
 
+### One Level Algorithms
+
+Consider the PCG from Heath:
+
+```julia
+# Assuming you have linear system of equations A*x0 = b
+# NOTE: indices adjusted to start from 1
+@assert n >= 1
+xk = initial_guess
+rk = b - A*x0    
+sk = inv(M)*r0   # important!! Preconditioned matrixed M
+for k = 1:n
+    alpha_k = (transpose(rk)*inv(M)*rk)/(transpose(sk)*A*sk)
+    xkp1 = xk + alpha_k*sk
+    rkp1 = rk - alpha_k*A*sk
+    betakp1 = (transpose(rkp1)*inv(M)rkp1)/(transpose(rk)*inv(M)*rk)
+    skp1 = inv(M)*rkp1 + betakp1*sk
+end 
+return xkp1 
+```
+
+Then the question is below how to formulate the domain decomposition technique as preconditioner or as a solver. As a solver, the algorithm makes perfect sense. But as a preconditioner, it seems you are "inside" the PCG algorithm for example... but how is the global system solved if the schwarz method is just a preconditioner...
+
+[Computational Science Stack Exchange: Schwarz as preconditioner vs. Solver](https://scicomp.stackexchange.com/questions/38988/what-is-the-difference-between-adittive-schwarz-as-a-preprocessor-and-a-solver): In essence, the schwarz method is a stationary method, and since any stationary method can also be used as a preconditioner by approximating the matrix inverse (which then allos `inv(A)*A*x = inv(A)*b ==> x = inv(A)*b`), the schwarz method is most often used as a preconditioner. But still, how does the global solution arise from this? See also an answer here on MPI and domain decomposition [direct solvers and domain decomposition](https://scicomp.stackexchange.com/questions/25353/direct-solvers-and-domain-decomposition-for-fem)
+
+Based on Dolean listing 3.3., it seems the preconditioner is applied (at least in the serial version) outside the loop first to get `z` and then `z = Mr` (ref [6] ch. 8) is used in in a preconditioned conjugate gradient. But how does this work in parallel?
+
+[Resolved-ish] PETSc book, Dolean, and the additive schwarz method described in Smith1996 basically indicate that `v = z` as in the conjugate gradient method.
+
 ### Balancing Domain Decomposition by Constraints
 
 Notes for the paper "A Preconditioner for Substructuring based on constrained Energy Minimization" (Dohrman 2003).
