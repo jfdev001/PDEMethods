@@ -7,7 +7,8 @@
 # * gauss-seidel
 # * conjugate gradient method (+ preconditioning?)
 
-using LinearAlgebra: LowerTriangular, UpperTriangular, diag, diagm, diagind
+using LinearAlgebra: LowerTriangular, UpperTriangular, diag, diagm, diagind,
+    Diagonal
 
 """
     jacobi_method(A::Matrix, b::Vector, x0::Vector, niters::Int)
@@ -212,4 +213,15 @@ function gauss_seidel_matrix_form_solver(
     end     
 
     return x
+end 
+
+function ssor_preconditioner(A_::Matrix, ω::Float64 = 1.0)
+    @assert issymmetric(A_)
+    @assert 0 < ω < 2
+    A = copy(A_) # expensive, whatevs
+    D = Diagonal(A) 
+    L = LowerTriangular(A)
+    Lᵀ = transpose(L)
+    M = (1/(2 - ω))*((1/ω)*D + L)*inv(((1/ω)*D))*transpose((1/ω)*D + L)
+    return M
 end 
