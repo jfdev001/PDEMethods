@@ -668,6 +668,60 @@ Overarching questions/observations:
     * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
     * This is asked by me [here]() and I think this also resolves my question (at least for the Schwarz case)
 * How do higher order basis functions (i.e., non-linear finite elements) affect the identification of vertices as used in domain decomposition. Section 4.2 of Ref [17] suggests that for simplicity linear finite elements are used, that is the dofs are located at mesh vertices... does this make a significant difference on implementation??
+* Pg. 141 of ref [17] states "the construction of the matrices `A_BB^(i)` requires to operate at the level of the amtrix assembly by the finite element code." Aren't these matrices formed from the assembly of the global solution matrix and subsequent decomposition of that matrix? 
+    * The thesis appears to do something along the lines of the following algo:
+    ```julia
+    # define a unit cell
+    unit_cell = user_input()
+
+    # construct total geometry as unit test
+    geometry = Metamaterial()
+    if uniform # not done in practice... just for unit testing
+        for i in x
+            for j in y
+                for k in z
+                    make_geometry!(geometry, unit_cell, i, j, k)
+                end
+            end
+        end
+    else
+        throw("notimplemented")
+    end
+
+    A_global, b_global = discretize(geometry)
+
+    # discretize each unit cell using gmsh 
+    A_units = [] # these would each have A_units^local for ref finite element
+    b_units = []
+    if uniform 
+        for i in x
+            for j in y
+                for k in z
+                    A_unit, b_unit = discretize(unit_cell, i, j, k)
+                    push!(A_units, A_unit)
+                    push!(b_units, b_Unit)
+                end
+            end
+        end
+    else
+        throw("notimplemented")
+    end
+
+    @assert A_global == assemble(A_units) && b_global == assemble(b_units)
+
+    # TODO:
+    # solve problems on local elements... this will require communication
+    # between boundary elements... something that must be known by perhaps
+    # a head node
+    
+    # TODO: 
+    # glue solutions together with domain decomp... but domain decomp
+    # as is currently implemented is BDDC, which is not a gluing mechanism
+    # but rather a preconditioner... and does this preconditioner act
+    # on every subdomain??? or is conjugate gradient iterations occuring
+    # only for global matrix...
+    # i.e., split --> preconditioned solve on subdomain --> construct global?`
+    ```
 
 ### One Level Algorithms
 
