@@ -299,7 +299,7 @@ julia> for (i, xi) in enumerate(x)
            u_mat[i, j] = PDEMethods.poisson_exact_u(xi, yj)
          end
        end
-julia> contourf(x, y, u, levels=20, color=:turbo)
+julia> contourf(x, y, u, levels=15, color=:jet1)
 julia> @assert all(u .≈ u_mat)
 ```
 
