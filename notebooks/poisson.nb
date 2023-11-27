@@ -1,0 +1,74 @@
+In[18]:= makeA[n_] := Module[{A, i, j},
+      A = Table[0, {i, n}, {j, n}];
+      Do[
+          Do[
+
+     A[[i, j]] = If[i == j, -2, If[i == j + 1 || i == j - 1, 1, 0]],
+               {j, 1, n}
+             ],
+          {i, 1, n}
+       ];
+
+      A[[1, 1]] = 1;
+      A[[1, 2]] = 0;
+      A[[-1, -2]] = 2;
+      A
+      ];
+makeB[n_, h_, force_, leftBC_, rightBC_] := Module[{b, i},
+      b = Table[0, {i, n}];
+      Do[
+
+    b[[i]] = 
+     If[i == 1, leftBC, 
+      If[i < n, f[(i - 1)*h]*h^2, (h^2*f[(i - 1)*h] - 2 h rightBC) ]
+            ]
+        , {i, 1, n}
+        ];
+      b
+      ];
+f[x_] := 6*x;(*RHS of ode*)
+fLaplace[x_] := 0
+Manipulate[
+  Module[{h, A, b, sol, solN, p1, p2, x, leftBC, rightBC},
+    h = 1/(nPoints - 1);
+    leftBC = 0;
+    rightBC = 2;
+    A = makeA[nPoints];
+    b = makeB[nPoints, h, fLaplace, leftBC, rightBC];
+    sol = LinearSolve[A, b];
+    solN = Table[{n*h, sol[[n + 1]]}, {n, 0, nPoints - 1}];
+
+    p1 = Plot[x, {x, 0, 2}, AxesOrigin -> {0, 0}]; (*exact solution*)
+
+    p2 = ListLinePlot[solN, PlotStyle -> Red, Mesh -> All];
+
+    Grid[{
+            {Row[{" h = ", NumberForm[N@h, {5, 4}]}]},
+            {Row[{MatrixForm[A], MatrixForm[Array[u, nPoints]] , 
+                        " = ", MatrixForm[N@b] }]},
+            {Show[p1, p2,                      
+                 PlotLabel -> "Red is numerical, Blue is exact solution",
+                 GridLines -> Automatic,
+                 GridLinesStyle -> LightGray, ImageSize -> 400
+                 ]
+             }
+          }, Frame -> All, Spacings -> {1, 2}
+       ]
+    ],
+  {{nPoints, 3, "How many points?"}, 3, 8, 1, Appearance -> "Labeled"},
+  TrackedSymbols :> {nPoints}
+  ]
+
+Out[22]= Manipulate[Module[{h$, A$, b$, sol$, solN$, p1$, p2$, x$, leftBC$, rightBC$}, 
+   h$ = 1/(nPoints - 1); leftBC$ = 0; rightBC$ = 2; A$ = makeA[nPoints]; 
+    b$ = makeB[nPoints, h$, fLaplace, leftBC$, rightBC$]; 
+    sol$ = LinearSolve[A$, b$]; solN$ = Table[{n*h$, sol$[[n + 1]]}, 
+      {n, 0, nPoints - 1}]; p1$ = Plot[x$, {x$, 0, 2}, AxesOrigin -> {0, 0}]; 
+    p2$ = ListLinePlot[solN$, PlotStyle -> Red, Mesh -> All]; 
+    Grid[{{Row[{" h = ", NumberForm[N[h$], {5, 4}]}]}, 
+      {Row[{MatrixForm[A$], MatrixForm[Array[u, nPoints]], " = ", 
+         MatrixForm[N[b$]]}]}, {Show[p1$, p2$, PlotLabel -> 
+         "Red is numerical, Blue is exact solution", GridLines -> Automatic, 
+        GridLinesStyle -> LightGray, ImageSize -> 400]}}, Frame -> All, 
+     Spacings -> {1, 2}]], {{nPoints, 5, "How many points?"}, 3, 8, 1, 
+   Appearance -> "Labeled"}, TrackedSymbols :> {nPoints}]
