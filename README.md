@@ -665,7 +665,9 @@ $$
 Overarching questions/observations:
 
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
-  * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
+    * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
+    * This is asked by me [here]() and I think this also resolves my question (at least for the Schwarz case)
+* How do higher order basis functions (i.e., non-linear finite elements) affect the identification of vertices as used in domain decomposition. Section 4.2 of Ref [17] suggests that for simplicity linear finite elements are used, that is the dofs are located at mesh vertices... does this make a significant difference on implementation??
 
 ### One Level Algorithms
 
@@ -772,3 +774,6 @@ Decomposition Methods: Algorithms, Theory, and Parallel Implementation". (SIAM).
 [16] Smith, B. F., Bjorstad, P.E., Gropp, W.D. (1996). "Domain Decomposition
 Parallel Multilevel Methods for Elliptic Partial Differential Equations."
 Cambridge University Press.
+
+[17] Bruaset, A. M. and Tveito, A. (2006). "Numerical Solution of Partial
+Differential EQuations on Parallel Computers." Springer.
