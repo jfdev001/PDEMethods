@@ -1,9 +1,8 @@
+using LinearAlgebra
+using SparseArrays
+
 # Finite difference schemes
 # see Driscoll 5.4 and Heath 8.6
-
-using LinearAlgebra: diagind
-
-
 function centered_first_deriv_wrt_pos(U, i, j, h) 
     (U[i+1,j] - U[i-1,j])/(2*h)
 end 
@@ -317,3 +316,51 @@ Return function `f` evaluation for the coordinates `x` and `y`.
 [1] : Equation 86 from Pawar2019.
 """
 poisson_f(x, y) = -8*π^2*sin(2*π*x)*sin(2*π*y) - 8*π^2*sin(32*π*x)*sin(32*π*y)
+
+## build n x n 2nd central difference matrix
+function cdiff2(n)
+    h = 2 / (n+1)
+    D = spdiagm(-1 => ones(n-1), 0 => -2*ones(n), 1 => ones(n-1))
+    D = D / h^2
+end
+
+## build n^2 x n^2 discretization of Laplace operator with zero Dirichlet BCs
+function lap(n)
+
+    # sparse second difference matrix and identity
+    D = cdiff2(n)
+    spI = sparse(I,n,n)
+
+    # Kronecker product
+    A = kron(spI,D)+kron(D,spI)
+
+end
+
+"""
+    poissonSolve(f, n)
+
+Solve Poisson's equation with right-hand side f(x,y) and zero Dirichlet BCs
+
+# Examples
+```julia
+julia> using PDEMethods: poissonSolve
+julia> # solve Poisson's equation with Gaussian right-hand side
+julia> n = 100
+julia> f(x,y) = 5*exp.(-10*(x.^2 .+ y.^2)) # could this also be 0??
+julia> u = poissonSolve(f, n)
+
+# References
+[1] : https://github.com/mitmath/18303/blob/master/supp_material/poissonFD.ipynb
+```
+"""
+function poissonSolve(f, n)
+    xfull = collect(LinRange(-1,1,n+2))
+    xint = xfull[2:end-1]  
+    b = vec(f(xint,xint'))          # vectorize f evaluated on grid for right-hand side
+    A = lap(n)                      # get finite diff discretization of Laplacian
+    @show typeof(A)
+    @show typeof(b)
+    u = reshape(A \ b, (n,n))       # reshape solution onto n x n grid
+    return A, u, b 
+end
+
