@@ -722,6 +722,9 @@ Overarching questions/observations:
     # only for global matrix...
     # i.e., split --> preconditioned solve on subdomain --> construct global?`
     ```
+* Mathew2008 in remark 2.8 indicates the use of indices for the restriction
+matrices and Fainchtein2001 indicates the use of maps for providing 
+neighbors to each subdomain.
 
 ### One Level Algorithms
 
@@ -831,3 +834,10 @@ Cambridge University Press.
 
 [17] Bruaset, A. M. and Tveito, A. (2006). "Numerical Solution of Partial
 Differential EQuations on Parallel Computers." Springer.
+
+[18] Mathew, T. P. A. (2008). "Domain Decomposition Methods for the Numerical
+Solution of Partial Differential Equations." Springer.
+
+[19] Rosalinda de Fainchtein, Ph.D. (2001). "Intermediate MPI: Domain 
+Decomposition -- A Tutorial with Exercises". CSC/NASA GSFC, Code 931.
+url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf 
