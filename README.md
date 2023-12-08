@@ -673,58 +673,59 @@ Overarching questions/observations:
 
   * The thesis appears to do something along the lines of the following algo:
 
-  ```julia
-  # define a unit cell
-  unit_cell = user_input()
+```julia
+# define a unit cell
+unit_cell = user_input()
 
-  # construct total geometry as unit test
-  geometry = Metamaterial()
-  if uniform # not done in practice... just for unit testing
-      for i in x
-          for j in y
-              for k in z
-                  make_geometry!(geometry, unit_cell, i, j, k)
-              end
-          end
-      end
-  else
-      throw("notimplemented")
-  end
+# construct total geometry as unit test
+geometry = Metamaterial()
+if uniform # not done in practice... just for unit testing
+    for i in x
+        for j in y
+            for k in z
+                make_geometry!(geometry, unit_cell, i, j, k)
+            end
+        end
+    end
+else
+    throw("notimplemented")
+end
 
-  A_global, b_global = discretize(geometry)
+A_global, b_global = discretize(geometry)
 
-  # discretize each unit cell using gmsh 
-  A_units = [] # these would each have A_units^local for ref finite element
-  b_units = []
-  if uniform 
-      for i in x
-          for j in y
-              for k in z
-                  A_unit, b_unit = discretize(unit_cell, i, j, k)
-                  push!(A_units, A_unit)
-                  push!(b_units, b_Unit)
-              end
-          end
-      end
-  else
-      throw("notimplemented")
-  end
+# discretize each unit cell using gmsh 
+A_units = [] # these would each have A_units^local for ref finite element
+b_units = []
+if uniform 
+    for i in x
+        for j in y
+            for k in z
+                A_unit, b_unit = discretize(unit_cell, i, j, k)
+                push!(A_units, A_unit)
+                push!(b_units, b_Unit)
+            end
+        end
+    end
+else
+    throw("notimplemented")
+end
 
-  @assert A_global == assemble(A_units) && b_global == assemble(b_units)
+@assert A_global == assemble(A_units) && b_global == assemble(b_units)
 
-  # TODO:
-  # solve problems on local elements... this will require communication
-  # between boundary elements... something that must be known by perhaps
-  # a head node
+# TODO:
+# solve problems on local elements... this will require communication
+# between boundary elements... something that must be known by perhaps
+# a head node
 
-  # TODO: 
-  # glue solutions together with domain decomp... but domain decomp
-  # as is currently implemented is BDDC, which is not a gluing mechanism
-  # but rather a preconditioner... and does this preconditioner act
-  # on every subdomain??? or is conjugate gradient iterations occuring
-  # only for global matrix...
-  # i.e., split --> preconditioned solve on subdomain --> construct global?`
-  ```
+# TODO: 
+# glue solutions together with domain decomp... but domain decomp
+# as is currently implemented is BDDC, which is not a gluing mechanism
+# but rather a preconditioner... and does this preconditioner act
+# on every subdomain??? or is conjugate gradient iterations occuring
+# only for global matrix...
+# i.e., split --> preconditioned solve on subdomain --> construct global?`
+```
+
 * Mathew2008 in remark 2.8 indicates the use of indices for the restriction
   matrices and Fainchtein2001 indicates the use of maps for providing
   neighbors to each subdomain.
