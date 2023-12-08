@@ -788,6 +788,28 @@ u_{22} & u_{23} & u_{24} & u_{25}
 \end{bmatrix}
 $$
 
+# Tentative List of Best Resources
+
+* General Scientific Computing and Numerical Linear Algebra
+    * Heath2002 (general scientific computing)
+    * Driscoll2022 (numerical computing with julia) 
+    * Darve2021 (numerical linear algebra with julia)
+* Finite Element Methods
+    * Simpson2017 (practical time dependent fem in matlab w/ earth science problems)
+    * Whitely2017 (lucid weak form derivations, time independent fems)
+    * Claes Johnson is a classic but i found quite difficult to read, if you
+    have a strong math background, you might try this 
+
+* Domain Decomposition/Multigrid
+    * de Fainchtein2001 (mpi and domain decomposition)
+    * Pawar2019 (nice algebraic multigrid discussion)
+    * I recommend reading these sort of in parallel to get different 
+    perspectives on notation and formulations of problems 
+        * Smith1996 (parallel domain decomposition and a classic)
+        * Bruaset2006 (domain decomposition covered in section 4)
+        * Dolean2015 (widely cited, nice few chapters)
+    * [Youtube Vid on Domain Decomposition](https://youtu.be/3DLxcaDnY9I?si=k4Jg5kkhymIzTfEJ)
+
 # References
 
 [1] Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
