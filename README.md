@@ -144,7 +144,7 @@ $$
 Note that in order to derive the weak form, we must multiply equation (1) by $v$ where $v$ is a test function that belongs to a set of functions such that $\forall v \in H_0^1(\Omega)$ where $H_0^1(\Omega)$ is a subset of a Sobolev space $H^1(\Omega)$ elucidated below.
 
 $$
-H^1(\Omega) = \{\psi \in C^0(\Omega) \ | \int_{\Omega}(\psi)^2dx < \infty   \}
+H^1(\Omega) = \text{Set}(\psi \in C^0(\Omega) \ | \int_{\Omega}(\psi)^2dx < \infty   )
 $$
 
 This reads "$\psi$ is a continuous function on the domain $\Omega$ that is square integrable (that is square integration exists/is finite)".
@@ -153,8 +153,8 @@ Then, we are interested in two subsets of $H^1(\Omega)$ that are defined below.
 
 $$
 \begin{aligned}
-H_E^1(\Omega) &= \{ \psi \in H^1(\Omega)\ |\ \psi\ \text{satisfies all Dirichlet boundary conditions}  \} \\
-H_0^1(\Omega) &= \{ \psi \in H^1(\Omega)\ |\ \psi(\vec{x}) = 0\ \text{at all points}\ \vec{x}\ \text{where Dirichlet boundary conditions are specified} \}
+H_E^1(\Omega) &= \text{Set}(\psi \in H^1(\Omega)\ |\ \psi\ \text{satisfies all Dirichlet boundary conditions}  ) \\
+H_0^1(\Omega) &=  \text{Set}(\psi \in H^1(\Omega)\ |\ \psi(\vec{x}) = 0\ \text{at all points}\ \vec{x}\ \text{where Dirichlet boundary conditions are specified} )
 \end{aligned}
 $$
 
@@ -665,66 +665,67 @@ $$
 Overarching questions/observations:
 
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
-    * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
-    * This is asked by me [here]() and I think this also resolves my question (at least for the Schwarz case)
+  * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
+  * This is asked by me [here]() and I think this also resolves my question (at least for the Schwarz case)
 * How do higher order basis functions (i.e., non-linear finite elements) affect the identification of vertices as used in domain decomposition. Section 4.2 of Ref [17] suggests that for simplicity linear finite elements are used, that is the dofs are located at mesh vertices... does this make a significant difference on implementation??
-* Pg. 141 of ref [17] states "the construction of the matrices `A_BB^(i)` requires to operate at the level of the amtrix assembly by the finite element code." Aren't these matrices formed from the assembly of the global solution matrix and subsequent decomposition of that matrix? 
-    * The thesis appears to do something along the lines of the following algo:
-    ```julia
-    # define a unit cell
-    unit_cell = user_input()
+* Pg. 141 of ref [17] states "the construction of the matrices `A_BB^(i)` requires to operate at the level of the amtrix assembly by the finite element code." Aren't these matrices formed from the assembly of the global solution matrix and subsequent decomposition of that matrix?
+  * The thesis appears to do something along the lines of the following algo:
 
-    # construct total geometry as unit test
-    geometry = Metamaterial()
-    if uniform # not done in practice... just for unit testing
-        for i in x
-            for j in y
-                for k in z
-                    make_geometry!(geometry, unit_cell, i, j, k)
-                end
-            end
-        end
-    else
-        throw("notimplemented")
-    end
+  ```julia
+  # define a unit cell
+  unit_cell = user_input()
 
-    A_global, b_global = discretize(geometry)
+  # construct total geometry as unit test
+  geometry = Metamaterial()
+  if uniform # not done in practice... just for unit testing
+      for i in x
+          for j in y
+              for k in z
+                  make_geometry!(geometry, unit_cell, i, j, k)
+              end
+          end
+      end
+  else
+      throw("notimplemented")
+  end
 
-    # discretize each unit cell using gmsh 
-    A_units = [] # these would each have A_units^local for ref finite element
-    b_units = []
-    if uniform 
-        for i in x
-            for j in y
-                for k in z
-                    A_unit, b_unit = discretize(unit_cell, i, j, k)
-                    push!(A_units, A_unit)
-                    push!(b_units, b_Unit)
-                end
-            end
-        end
-    else
-        throw("notimplemented")
-    end
+  A_global, b_global = discretize(geometry)
 
-    @assert A_global == assemble(A_units) && b_global == assemble(b_units)
+  # discretize each unit cell using gmsh 
+  A_units = [] # these would each have A_units^local for ref finite element
+  b_units = []
+  if uniform 
+      for i in x
+          for j in y
+              for k in z
+                  A_unit, b_unit = discretize(unit_cell, i, j, k)
+                  push!(A_units, A_unit)
+                  push!(b_units, b_Unit)
+              end
+          end
+      end
+  else
+      throw("notimplemented")
+  end
 
-    # TODO:
-    # solve problems on local elements... this will require communication
-    # between boundary elements... something that must be known by perhaps
-    # a head node
-    
-    # TODO: 
-    # glue solutions together with domain decomp... but domain decomp
-    # as is currently implemented is BDDC, which is not a gluing mechanism
-    # but rather a preconditioner... and does this preconditioner act
-    # on every subdomain??? or is conjugate gradient iterations occuring
-    # only for global matrix...
-    # i.e., split --> preconditioned solve on subdomain --> construct global?`
-    ```
+  @assert A_global == assemble(A_units) && b_global == assemble(b_units)
+
+  # TODO:
+  # solve problems on local elements... this will require communication
+  # between boundary elements... something that must be known by perhaps
+  # a head node
+
+  # TODO: 
+  # glue solutions together with domain decomp... but domain decomp
+  # as is currently implemented is BDDC, which is not a gluing mechanism
+  # but rather a preconditioner... and does this preconditioner act
+  # on every subdomain??? or is conjugate gradient iterations occuring
+  # only for global matrix...
+  # i.e., split --> preconditioned solve on subdomain --> construct global?`
+  ```
 * Mathew2008 in remark 2.8 indicates the use of indices for the restriction
-matrices and Fainchtein2001 indicates the use of maps for providing 
-neighbors to each subdomain.
+  matrices and Fainchtein2001 indicates the use of maps for providing
+  neighbors to each subdomain.
 
 ### One Level Algorithms
 
@@ -735,7 +736,7 @@ Consider the PCG from Heath:
 # NOTE: indices adjusted to start from 1
 @assert n >= 1
 xk = initial_guess
-rk = b - A*x0    
+rk = b - A*x0  
 sk = inv(M)*r0   # important!! Preconditioned matrixed M
 for k = 1:n
     alpha_k = (transpose(rk)*inv(M)*rk)/(transpose(sk)*A*sk)
@@ -791,24 +792,26 @@ $$
 # Tentative List of Best Resources
 
 * General Scientific Computing and Numerical Linear Algebra
-    * Heath2002 (general scientific computing)
-    * Driscoll2022 (numerical computing with julia) 
-    * Darve2021 (numerical linear algebra with julia)
-* Finite Element Methods
-    * Simpson2017 (practical time dependent fem in matlab w/ earth science problems)
-    * Whitely2017 (lucid weak form derivations, time independent fems)
-    * Claes Johnson is a classic but i found quite difficult to read, if you
-    have a strong math background, you might try this 
 
+  * Heath2002 (general scientific computing)
+  * Driscoll2022 (numerical computing with julia)
+  * Darve2021 (numerical linear algebra with julia)
+* Finite Element Methods
+
+  * Simpson2017 (practical time dependent fem in matlab w/ earth science problems)
+  * Whitely2017 (lucid weak form derivations, time independent fems)
+  * Claes Johnson is a classic but i found quite difficult to read, if you
+    have a strong math background, you might try this
 * Domain Decomposition/Multigrid
-    * de Fainchtein2001 (mpi and domain decomposition)
-    * Pawar2019 (nice algebraic multigrid discussion)
-    * I recommend reading these sort of in parallel to get different 
-    perspectives on notation and formulations of problems 
-        * Smith1996 (parallel domain decomposition and a classic)
-        * Bruaset2006 (domain decomposition covered in section 4)
-        * Dolean2015 (widely cited, nice few chapters)
-    * [Youtube Vid on Domain Decomposition](https://youtu.be/3DLxcaDnY9I?si=k4Jg5kkhymIzTfEJ)
+
+  * de Fainchtein2001 (mpi and domain decomposition)
+  * Pawar2019 (nice algebraic multigrid discussion)
+  * I recommend reading these sort of in parallel to get different
+    perspectives on notation and formulations of problems
+    * Smith1996 (parallel domain decomposition and a classic)
+    * Bruaset2006 (domain decomposition covered in section 4)
+    * Dolean2015 (widely cited, nice few chapters)
+  * [Youtube Vid on Domain Decomposition](https://youtu.be/3DLxcaDnY9I?si=k4Jg5kkhymIzTfEJ)
 
 # References
 
@@ -860,6 +863,6 @@ Differential EQuations on Parallel Computers." Springer.
 [18] Mathew, T. P. A. (2008). "Domain Decomposition Methods for the Numerical
 Solution of Partial Differential Equations." Springer.
 
-[19] Rosalinda de Fainchtein, Ph.D. (2001). "Intermediate MPI: Domain 
+[19] Rosalinda de Fainchtein, Ph.D. (2001). "Intermediate MPI: Domain
 Decomposition -- A Tutorial with Exercises". CSC/NASA GSFC, Code 931.
-url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf 
+url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
