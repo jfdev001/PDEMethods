@@ -147,7 +147,7 @@ $$
 H^1(\Omega) = \text{Set}(\psi \in C^0(\Omega) \ | \int_{\Omega}(\psi)^2dx < \infty   )
 $$
 
-This reads "$\psi$ is a continuous function on the domain $\Omega$ that is square integrable (that is square integration exists/is finite)".
+This reads "continuous functions $\psi$ on the domain $\Omega$ that are square integrable (that is square integration exists/is finite) belong to this set".
 
 Then, we are interested in two subsets of $H^1(\Omega)$ that are defined below.
 
@@ -665,10 +665,12 @@ $$
 Overarching questions/observations:
 
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
+
   * It seems to me that domain decompositions split a global matrix $A$ from the linear system of equations $Au = b$ across subdomains $\Omega_i$ and then solve local systems of equations $A^{(i)} u^{(i)} = b^{(i)}$. How does a preconditioner come into effect here?
   * This is asked by me [here]() and I think this also resolves my question (at least for the Schwarz case)
 * How do higher order basis functions (i.e., non-linear finite elements) affect the identification of vertices as used in domain decomposition. Section 4.2 of Ref [17] suggests that for simplicity linear finite elements are used, that is the dofs are located at mesh vertices... does this make a significant difference on implementation??
 * Pg. 141 of ref [17] states "the construction of the matrices `A_BB^(i)` requires to operate at the level of the amtrix assembly by the finite element code." Aren't these matrices formed from the assembly of the global solution matrix and subsequent decomposition of that matrix?
+
   * The thesis appears to do something along the lines of the following algo:
 
   ```julia
