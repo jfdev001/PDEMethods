@@ -796,25 +796,31 @@ $$
 
 * General Scientific Computing and Numerical Linear Algebra
 
-  * Heath2002 (general scientific computing)
-  * Driscoll2022 (numerical computing with julia)
-  * Darve2021 (numerical linear algebra with julia)
+  * General scientific computing --> Heath, M. T. (2002). Scientific Computing: An Introductory Survey.
+    Boston: McGraw-Hill. ISBN: 0072399104
+  * numerical computing with julia --> Tobin A. Driscoll, Richard J. Braun. Fundamentals of Numerical Computation: Julia Edition. SIAM-Society for Industrial and Applied Mathematics, 2022. url: https://tobydriscoll.net/fnc-julia/frontmatter.html
+  * more linear algebra --> Darve, E., Wootters, M (2021). Numerical Linear Algebra with Julia. SIAM.
 * Finite Element Methods
 
-  * Simpson2017 (practical time dependent fem in matlab w/ earth science problems)
-  * Whitely2017 (lucid weak form derivations, time independent fems)
-  * Claes Johnson is a classic but i found quite difficult to read, if you
-    have a strong math background, you might try this
-* Domain Decomposition/Multigrid
+  * practical time dependent fem in matlab w/ earth science applications --> Simpson, G. (2017). Practical finite element modeling in Earth science using MATLAB. Wiley.
+  * lucid weak form derivations, time independent fems, matlab code --> Whiteley, J. (2017). Finite Element Methods: A Practical Guide. Springer.
+  * Claes Johnson is a classic but i found this quite an unintuitive read without having read the other two texts, but if you have a strong math background, you might try reading this directly
+* Domain Decomposition some Multigrid
 
-  * de Fainchtein2001 (mpi and domain decomposition)
-  * Pawar2019 (nice algebraic multigrid discussion)
+  * nice algebraic multigrid discussion --> Pawar S, San O. CFD Julia: A Learning Module Structuring an Introductory Course on Computational Fluid Dynamics. Fluids. 2019; 4(3):159.
+    https://doi.org/10.3390/fluids4030159
   * I recommend reading these sort of in parallel to get different
-    perspectives on notation and formulations of problems
-    * Smith1996 (parallel domain decomposition and a classic)
-    * Bruaset2006 (domain decomposition covered in section 4)
-    * Dolean2015 (widely cited, nice few chapters)
+    perspectives on notation and formulations of domain decomposition
+    * parallel domain decomposition and a classic --> Smith, B. F., Bjorstad, P.E., Gropp, W.D. (1996). "Domain Decomposition Parallel Multilevel Methods for Elliptic Partial Differential Equations."
+      Cambridge University Press.
+    * modern book that is reasonably clear (there's also a [video lecture](https://youtu.be/hcoikfp64bM?si=ElFHqXTP62I3uTrx) online for the first couple chapters) --> Dolean, V., Pierre, J., Nataf, F. (2015). "An Introduction to Domain
+      Decomposition Methods: Algorithms, Theory, and Parallel Implementation". (SIAM).
+    * domain decomposition covered in section 4 pretty lucidly --> Bruaset, A. M. and Tveito, A. (2006). "Numerical Solution of Partial Differential Equations on Parallel Computers." Springer.
+    * one of *the* most widely cited domain decomposition book, but extremely technical so really only good if you have quite a good math background --> Tosselli. Domain Decomposition Methods - Algorithms and Theory. https://link.springer.com/book/10.1007/b137868
   * [Youtube Vid on Domain Decomposition](https://youtu.be/3DLxcaDnY9I?si=k4Jg5kkhymIzTfEJ)
+  * MPI and domain decomposition --> Rosalinda de Fainchtein, Ph.D. (2001). "Intermediate MPI: Domain
+    Decomposition -- A Tutorial with Exercises". CSC/NASA GSFC, Code 931.
+    url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 
 # References
 
