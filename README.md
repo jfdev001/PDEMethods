@@ -730,6 +730,17 @@ end
   matrices and Fainchtein2001 indicates the use of maps for providing
   neighbors to each subdomain.
 
+### Preconditioner
+
+$$
+M^{-1} A \vec{u} = M^{-1} \vec{b}
+$$
+
+Above is the definition of a preconditioner , where $M$ is the preconditioner and the 
+ideally $M \approx A$ such that the solution $\vec{u}$ is found in one step of a given 
+iterative method's iteration. In practice, $M^{-1}$ is not formed explicitly, rather
+the system $M\vec{v} = \vec{w}$ is solved [20].
+
 ### One Level Algorithms
 
 Consider the PCG from Heath:
@@ -792,7 +803,7 @@ u_{22} & u_{23} & u_{24} & u_{25}
 \end{bmatrix}
 $$
 
-## FETI
+### FETI
 
 $$
 \begin{bmatrix} K & B^{T} \\
@@ -885,3 +896,5 @@ Solution of Partial Differential Equations." Springer.
 [19] Rosalinda de Fainchtein, Ph.D. (2001). "Intermediate MPI: Domain
 Decomposition -- A Tutorial with Exercises". CSC/NASA GSFC, Code 931.
 url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
+
+[20] "PETSc for Partial Differential Equations Numerical Solutions in C and Python" (Buehler 2021)
