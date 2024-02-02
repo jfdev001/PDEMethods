@@ -792,6 +792,19 @@ u_{22} & u_{23} & u_{24} & u_{25}
 \end{bmatrix}
 $$
 
+## FETI
+
+$$
+\begin{bmatrix} K & B^{T} \\
+                 B & 0  
+\end{bmatrix}
+\begin{bmatrix} q \\ 
+\lambda \end{bmatrix}
+=
+\begin{bmatrix} f \\ 
+0 \end{bmatrix}
+$$
+
 # Tentative List of Best Resources
 
 * General Scientific Computing and Numerical Linear Algebra
