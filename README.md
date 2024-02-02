@@ -797,11 +797,8 @@ $$
 $$
 \begin{bmatrix} K & B^{T} \\
                  B & 0  
-\end{bmatrix}
-\begin{bmatrix} q \\ 
-\lambda \end{bmatrix}
-=
-\begin{bmatrix} f \\ 
+\end{bmatrix} \begin{bmatrix} q \\ 
+\lambda \end{bmatrix} = \begin{bmatrix} f \\ 
 0 \end{bmatrix}
 $$
 
