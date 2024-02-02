@@ -4,6 +4,8 @@
 # Introductory Course on Computational Fluid Dynamics
 # PI Author: https://www.sanlab.org/people
 
+# TODO: Why does the indexing often have i = 2:nx and j = 2:ny? why 2?
+
 """
     multigrid!(
         dx, dy, nxf::Int, nyf::Int, nxc::Int, nyc::Int, v1::Int, v2::Int, v3::Int, 
