@@ -660,6 +660,116 @@ y_{k_2} - y_{k_1} & y_{k_3} - y_{k_1}
 \end{aligned}
 $$
 
+### Mixed Boundary Conditions and `Ferrite.jl`
+
+From [this](https://github.com/Ferrite-FEM/Ferrite.jl/issues/762) issue:
+
+Consider the following strong form
+
+$$
+\begin{aligned}
+\nabla \cdot \vec{q} &= f && \forall x \in \Omega \\
+u &= g_{D} && \forall x \in \Gamma_{D} \\
+q_{n} := \vec{q} \cdot \vec{n} &= g_{N} && \forall \in \Gamma_{N} \\
+a u + b q_{n} = a u + b \vec{q} \cdot \vec{n} &= g_{R} && \forall x \in \Gamma_{R}
+\end{aligned}
+$$
+
+where $u = u(\vec{x} = u(\mathbf{x}))$ is the temperature, $\vec{q} = -k_{\Omega} \nabla u$ the flux (Fourier's law), $\Omega$ the domain, $\Gamma = \Gamma_{D} \cup \Gamma_{N} \cup \Gamma_{R}$ the boundary of $\Omega$ (split into Dirichlet, Neumann, and Robin parts), and $\vec{n}$ the outwards normal vector.  On the Dirichlet part the temperature is prescribed, on the Neumann part the (normal) flux is prescribed, and on the Robin part a linear combination of temperature and (normal) flux is prescribed.
+
+The corresponding weak form, with test function $v$, can then be derived to: Find $u \in \mathbb{U}$ s.t.
+
+$$
+\int_{\Omega}k_{\Omega}\ \nabla v\cdot\nabla u\ \mathrm{d}\Omega-\int_{\Gamma_{\mathrm{R}}}v{\frac{a}{b}}u\ \mathrm{d}\Gamma=\int_{\Omega}v\ f\ \mathrm{d}\Omega - \int_{\Gamma_{\mathrm{N}}}v\ {g_{\mathrm{N}}}\ \mathrm{d}\Gamma - \int_{\Gamma_{\mathrm{R}}}v\ {\frac{g_{\mathrm{R}}}{b}}\ \mathrm{d}\Gamma  \ \ \forall v\in\mathbb{U}^{0}.
+$$
+
+Of interest for the Robin boundary is the boundary integrals over $\Gamma_{R}$ on the left and right hand sides, which will give contributions to the tangent matrix, and the right hand side, respectively.
+
+With FE discretizations for $u$ and $v$:
+
+$$
+u\approx u_{\mathrm{h}}=\sum_{i=1}^{N}\phi_{i}a_{i},\quad u\approx v_{\mathrm{h}}=\sum_{i=1}^{N}\phi_{i}b_{i}
+$$
+
+we obtain the discrete system $K a = f$, where
+
+$$
+\begin{aligned}
+K_{ij} &= \int_{\Omega} k_{\Omega} \nabla \phi_{i} \cdot \nabla \phi_{j}\ d\Omega - \int_{\Gamma_{R}} \phi_{i} \frac{a}{b} \phi_{j}\ d\Gamma\\
+f_{i} &= \int_{\Omega} \phi_{i} f\ d\Omega - \int_{\Gamma_{N}}\ d\Gamma - \int_{\Gamma_{R}} \phi_{i} \frac{g_{R}}{b}\ d\Gamma
+\end{aligned}
+$$
+
+In Ferrite this would be implemented something like (showing only the evaluation of the Robin integrals here):
+
+```julia
+using Ferrite
+
+# FE basis and quadrature (2D example with linear quads)
+ip = Lagrange{2, RefCube, 1}()
+qr = QuadratureRule{2, RefCube}(1)
+fv = FaceScalarValues(qr, ip)
+
+# Global matrix/vector
+K = create_sparsity_pattern(dh)
+f = zeros(ndofs(dh))
+
+# Local matrix/vector
+Ke = zeros(ndofs_per_cell(dh), ndofs_per_cell(dh))
+fe = zeros(ndofs_per_cell(dh))
+
+# Loop for the Robin boundary
+for (cellid, faceid) in getfaceset(grid, "RobinBC")
+    # Reset the buffers
+    fill!(Ke, 0)
+    fill!(fe, 0)
+    # Update FE basis
+    reinit!(fv, getcoordinates(grid, cellid), faceid)
+    # Compute the local contribution
+    for qp in 1:getnquadpoints(fv)
+        dΓ = getdetJdV(fv, qp)
+        for i in 1:getnbasefunctions(fv)
+            ϕᵢ = shape_value(fv, qp, i)
+            fe[i] -= ( ϕᵢ * gR / b ) * dΓ
+            for j in 1:getnbasefunction(fv)
+                ϕⱼ = shape_value(fv, qp, j)
+                Ke[i, j] -= ( ϕᵢ * a / b * ϕⱼ ) * dΓ
+            end
+        end
+    end
+    # Assemble local contribution
+    dofs = celldofs(dh, cellid)
+    for (i, I) in pairs(dofs)
+        f[I] += fe[i]
+        for (j, J) in pairs(dofs)
+            K[I, J] += Ke[i, j]
+        end
+    end
+end
+```
+
+Another common way to define the RObin boundary condition is
+
+$$
+q_{n} = -k_{\Gamma} (u_{R} - u)
+$$
+
+where $k_{\Gamma}$ is the interface conductivity, and $u_{\Gamma}$ the ambient tempreature. With this parametrization we can identify e.g.,
+
+$$
+\begin{aligned}
+b &= 1 \\
+a &= -k_{\Gamma} \\
+g_{R} &= -k_{\Gamma} u_{\Gamma}
+\end{aligned}
+$$
+
+which would result in the (perhaps more recognizatble system)
+
+$$
+\int_{\Omega} k_{\Omega} \nabla v \cdot \nabla u\ d\Omega + \int_{\Gamma_{R}} v k_{\Gamma} u\ d\Gamma = \int_{\Omega} v\ f\ d\Omega - \int_{\Gamma_N} v g_N\ d\Gamma + \int_{\Gamma_R} v k_{\Gamma} u_{\Gamma}\ d\Gamma
+$$
+
 ## Domain Decomposition Methods
 
 Overarching questions/observations:
@@ -736,8 +846,8 @@ $$
 M^{-1} A \vec{u} = M^{-1} \vec{b}
 $$
 
-Above is the definition of a preconditioner , where $M$ is the preconditioner and the 
-ideally $M \approx A$ such that the solution $\vec{u}$ is found in one step of a given 
+Above is the definition of a preconditioner , where $M$ is the preconditioner and the
+ideally $M \approx A$ such that the solution $\vec{u}$ is found in one step of a given
 iterative method's iteration. In practice, $M^{-1}$ is not formed explicitly, rather
 the system $M\vec{v} = \vec{w}$ is solved [20].
 
