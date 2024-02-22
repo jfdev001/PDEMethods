@@ -2,6 +2,11 @@
 
 A Julia package for implementing numerical methods for canonical PDEs. General notes on PDEs, finite differences, and finite elements are dispersed throughout. Intended for self study only. The pronoun "we" is used to refer to both the reader and the author (Jared Frazier).
 
+## Iterative Methods and Numerical Linear Algebra
+
+The rate of convergence of the Jacobi method is set by the ratefor the slowest-decaying eigenmode. The modulus of this largest factor, therefore, lying between 0 and 1 is caleld the spectral radius of the relaxation operator. See Numerical Recipes in C++ 2edp. 867.
+
+
 ## Finite Difference Methods
 
 ### Forward, Centered, Backward Finite Differences
