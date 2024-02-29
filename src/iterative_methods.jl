@@ -153,6 +153,13 @@ end
 Return solution to linear system `Ax = b` via Gauss-Seidel (ω = 1., or SOR
 for ω != 1 and ω ∈ (0, 2)) method.
 
+# Examples
+```julia-repl
+julia> using PDEMethods: laplace_eq_init_arrays, block_diagonal_matrix, gauss_seidel_matheq
+julia> mesh, A, b = laplace_eq_init_arrays(;grid_dim_n=16, lbc=0, rbc=0, tbc=1, bbc=0)
+julia> @assert all(gauss_seidel_matheq(A, b, zeros(length(b)), 1000) .≈ A \\ b)
+```
+
 # References
 [1] : Ch. 11.5.3 Heath.
 """
@@ -163,16 +170,10 @@ function gauss_seidel_matheq(
     m, n = size(A)
     for k in 1:niters
         for i in 1:n
-            xkplus1_sum = 0
-            for j in 1:i-1
-                xkplus1_sum += A[i, j] * x[j]
-            end
-
-            xk_sum = 0
-            for j in i+1:n
-                xk_sum += A[i, j] * x[j]
-            end
-           
+            # restricted sums
+            xkplus1_sum = sum(A[i, 1:i-1] .* x[1:i-1])
+            xk_sum = sum(A[i, i+1:n] .* x[i+1:n])
+  
             xi_kplus1_GS = (b[i] - xkplus1_sum - xk_sum) / A[i, i] # Gauss Seidel method 
             xi_k = x[i]
             x[i] = xi_k + ω*(xi_kplus1_GS - xi_k) # update x_i^{(k+1)}
