@@ -172,8 +172,10 @@ function gauss_seidel_matheq(
             for j in i+1:n
                 xk_sum += A[i, j] * x[j]
             end
-
-            x[i] = x[i] + ω * ((b[i] - xkplus1_sum - xk_sum) / A[i, i] - x[i])
+           
+            xi_kplus1_GS = (b[i] - xkplus1_sum - xk_sum) / A[i, i] # Gauss Seidel method 
+            xi_k = x[i]
+            x[i] = xi_k + ω*(xi_kplus1_GS - xi_k) # update x_i^{(k+1)}
         end
     end
     return x
