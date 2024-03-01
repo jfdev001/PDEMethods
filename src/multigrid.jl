@@ -4,7 +4,10 @@
 # Introductory Course on Computational Fluid Dynamics
 # PI Author: https://www.sanlab.org/people
 
-# TODO: Why does the indexing often have i = 2:nx and j = 2:ny? why 2?
+# TODO: Why does the indexing often have i = 2:nx and j = 2:ny? It appears this
+# is due to the fact that the solver is solving directly on the square array 
+# U(i,j) rather than the column vector Uhat 
+# (see https://people.eecs.berkeley.edu/~demmel/cs267/lecture24/lecture24.html as an explicit mention of this distinction)
 
 """
     multigrid!(
