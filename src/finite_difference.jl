@@ -308,6 +308,24 @@ julia> @assert all(u .≈ u_mat)
 poisson_exact_u(x, y) = sin(2*π*x)*sin(2*π*y) + 1/16^2*sin(32*π*x)*sin(32*π*y)
 
 """
+    f_on_mesh_grid(f, domain_1D::Vector)::Matrix
+
+Return matrix from function `f` evaluated on a mesh defined by `domain_1D`.
+
+Assumes `f` is of form `f(arg1, arg2)`. 
+"""
+function f_on_mesh_grid(f, domain_1D::Vector)::Matrix
+    n = length(domain_1D)
+    M = zeros(n, n)
+    for (j, xj) in enumerate(domain_1D)
+        for (i, xi) in enumerate(domain_1D)
+           M[i, j] = f(xj, xi)
+        end
+    end
+    return M
+end 
+
+"""
     poisson_f(x, y)
 
 Return function `f` evaluation for the coordinates `x` and `y`.
@@ -346,7 +364,7 @@ Solve Poisson's equation with right-hand side f(x,y) and zero Dirichlet BCs
 julia> using PDEMethods: poissonSolve
 julia> # solve Poisson's equation with Gaussian right-hand side
 julia> n = 100
-julia> f(x,y) = 5*exp.(-10*(x.^2 .+ y.^2)) # could this also be 0??
+julia> f(x,y) = 5*exp(-10*(x^2 + y^2)) # could this also be 0??
 julia> u = poissonSolve(f, n)
 
 # References
@@ -356,7 +374,8 @@ julia> u = poissonSolve(f, n)
 function poissonSolve(f, n)
     xfull = collect(LinRange(-1,1,n+2))
     xint = xfull[2:end-1]  
-    b = vec(f(xint,xint'))          # vectorize f evaluated on grid for right-hand side
+    b = @. f(xint,xint')          # vectorize f evaluated on grid for right-hand side
+    b = vec(b)
     A = lap(n)                      # get finite diff discretization of Laplacian
     @show typeof(A)
     @show typeof(b)
