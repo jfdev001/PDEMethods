@@ -355,6 +355,33 @@ function lap(n)
 end
 
 """
+    init_poisson_problem(n, f = (x, y) -> 5*exp(-10*(x^2 + y^2)))
+
+Return linear system of equations `Ax = b` with initial guess as zeroed `x0`.
+
+# Arguments
+- `n`: Number of interior grid points in the x or y direction.
+- `f`: Forcing function for poisson equation `-∇u(x,y) = f`
+"""
+function init_poisson_problem(n, f = (x, y) -> 5*exp(-10*(x^2 + y^2)))
+    xfull = collect(LinRange(-1,1,n+2))
+    xint = xfull[2:end-1]  
+    b = @. f(xint,xint')          # vectorize f evaluated on grid for right-hand side
+    b = vec(b)
+    A = lap(n)                      # get finite diff discretization of Laplacian
+    ndofs = length(b)
+    x0 = zeros(ndofs)
+    return A, x0, b 
+end 
+
+"""
+    mit_poisson_problem(n)
+
+Return `A`, `x0`, and `b` for a 2D poisson problem of size `n^2`.
+"""
+mit_poisson_problem(n) = init_poisson_problem(n)
+
+"""
     poissonSolve(f, n)
 
 Solve Poisson's equation with right-hand side f(x,y) and zero Dirichlet BCs
@@ -365,7 +392,7 @@ julia> using PDEMethods: poissonSolve
 julia> # solve Poisson's equation with Gaussian right-hand side
 julia> n = 100
 julia> f(x,y) = 5*exp(-10*(x^2 + y^2)) # could this also be 0??
-julia> u = poissonSolve(f, n)
+julia> A, u, b = poissonSolve(f, n)
 
 # References
 [1] : https://github.com/mitmath/18303/blob/master/supp_material/poissonFD.ipynb

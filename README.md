@@ -6,7 +6,6 @@ A Julia package for implementing numerical methods for canonical PDEs. General n
 
 The rate of convergence of the Jacobi method is set by the ratefor the slowest-decaying eigenmode. The modulus of this largest factor, therefore, lying between 0 and 1 is caleld the spectral radius of the relaxation operator. See Numerical Recipes in C++ 2edp. 867.
 
-
 ## Finite Difference Methods
 
 ### Forward, Centered, Backward Finite Differences
@@ -927,6 +926,10 @@ $$
 \lambda \end{bmatrix} = \begin{bmatrix} f \\ 
 0 \end{bmatrix}
 $$
+
+## Algebraic Multigrid
+
+Linear interpolation can best be described [here](https://math.stackexchange.com/questions/4902406/forming-a-matrix-i-e-linear-operator-based-on-implicit-description-of-coeffi/4902935#4902935).
 
 # Tentative List of Best Resources
 
