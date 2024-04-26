@@ -108,6 +108,10 @@ $$
 
 Since such a problem is an IVP and BVP, we have sufficient information to compute the solutions on the grid using an appropriate iterative method.
 
+### Formulation of Sparse Linear Systems
+
+Naturally, the finite difference discretization leads only to an operation on a small subset of the total degrees of freedom possible on a given domain. This will lead to sparse linear systems of equations, that is with $Au = b$ such that only a small fraction of $A$ is nonzero. In the most efficient formulations, one can use techniques such as a definition of the central difference formula for second derivatives combined with the kroncker product to make the coefficient matrix $A$, see [here](https://github.com/mitmath/18303/blob/c599fb9d562609fd0d12afa80b4847b31cd755a3/supp_material/poissonFD.ipynb). But one could also just enumerate rules that determine for which points $i,j$ the operators in the PDE will be defined and then use that information to populate the inner index, outer index, and value of vectors corresponding to sparse matrices see [here](https://tbetcke.github.io/hpc_lecture_notes/sparse_linalg_pde.html).
+
 ## Finite Element Methods
 
 Overarching questions/observations:

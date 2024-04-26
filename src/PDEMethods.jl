@@ -1,6 +1,6 @@
 module PDEMethods
 
-import AlgebraicMultigrid: _solve
+import AlgebraicMultigrid: _solve, ruge_stuben
 
 function inspect_amg()
     A, x, b = mit_poisson_problem(10)    
