@@ -110,7 +110,46 @@ Since such a problem is an IVP and BVP, we have sufficient information to comput
 
 ### Formulation of Sparse Linear Systems
 
-Naturally, the finite difference discretization leads only to an operation on a small subset of the total degrees of freedom possible on a given domain. This will lead to sparse linear systems of equations, that is with $Au = b$ such that only a small fraction of $A$ is nonzero. In the most efficient formulations, one can use techniques such as a definition of the central difference formula for second derivatives combined with the kroncker product to make the coefficient matrix $A$, see [here](https://github.com/mitmath/18303/blob/c599fb9d562609fd0d12afa80b4847b31cd755a3/supp_material/poissonFD.ipynb). But one could also just enumerate rules that determine for which points $i,j$ the operators in the PDE will be defined and then use that information to populate the inner index, outer index, and value of vectors corresponding to sparse matrices see [here](https://tbetcke.github.io/hpc_lecture_notes/sparse_linalg_pde.html).
+Naturally, the finite difference discretization leads only to an operation on a small subset of the total degrees of freedom possible on a given domain. This will lead to sparse linear systems of equations, that is with $Au = b$ such that only a small fraction of $A$ is nonzero. In the most efficient formulations, one can use techniques such as a definition of the central difference formula for second derivatives combined with the kroncker product to make the coefficient matrix $A$, see [here](https://github.com/mitmath/18303/blob/c599fb9d562609fd0d12afa80b4847b31cd755a3/supp_material/poissonFD.ipynb). But one could also just enumerate rules that determine for which points $i,j$ the operators in the PDE will be defined and then use that information to populate the inner index, outer index, and value of vectors corresponding to sparse matrices see [here](https://tbetcke.github.io/hpc_lecture_notes/sparse_linalg_pde.html). Consider also this approach in Julia from F. Verdugo:
+
+```julia
+using SparseArrays
+function generate_system_sparse(u)
+    nx,ny = size(u)
+    stencil = [(-1,0),(1,0),(0,-1),(0,1)]
+    nnz_bound = 5*nx*ny
+    nrows = (nx-2)*(ny-2)
+    ncols = nrows
+    b = zeros(nrows)
+    I = zeros(Int,nnz_bound)
+    J = zeros(Int,nnz_bound)
+    V = zeros(nnz_bound)
+    inz = 0
+    for j in 2:(ny-1)
+        for i in 2:(nx-1)
+            row = i-1 + (ny-2)*(j-2)
+            inz += 1
+            I[inz] = row
+            J[inz] = row
+            V[inz] = 4.0
+            for (di,dj) in stencil
+                on_boundary = i+di in (1,nx) || j+dj in (1,ny)
+                if on_boundary
+                    b[row] += u[i+di,j+dj]
+                    continue
+                end
+                col = i+di-1 + (ny-2)*(j+dj-2)
+                inz += 1
+                I[inz] = row
+                J[inz] = col
+                V[inz] = -1.0
+            end
+        end
+    end
+    A = sparse(view(I,1:inz),view(J,1:inz),view(V,1:inz),nrows,ncols)
+    A,b
+end
+```
 
 ## Finite Element Methods
 
