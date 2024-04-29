@@ -682,7 +682,37 @@ $$
 
 where $N_{ele}$ is the number of elements in the mesh, and $e_k$ is the region occupied by element $k$.
 
-However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{\text{local}}^{(k)}$, where $A_{\text{local}, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
+However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix 
+
+$$
+\mathbf{A}_{local}^{(k)},
+$$
+
+where 
+
+$$
+A_{local, i, j}^{(k)},
+$$ 
+
+contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for 
+
+$$
+\vec{b}_{local}^{(k)},
+$$ 
+
+where 
+
+$$
+b_{local, i}^{(k)}
+$$ 
+
+contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of 
+
+$$
+A_{local}^{(k)},
+$$ 
+
+for $i=1,2,3$ and $j=1,2,3$ is
 
 $$
 \begin{aligned}
