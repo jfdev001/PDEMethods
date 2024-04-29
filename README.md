@@ -299,7 +299,7 @@ $$
 
 This section is based on chapter 7 of ref [8].
 
-For a triangular finite element $k$, there are three nodes $k_1$, $k_2$ and $k_3$ and each of those nodes takes on a coordinate in the physical space $(x_{k_1}, y_{k_1}), (x_{k_2}, y_{k_2}), (x_{k_3}, y_{k_3})$. For integration purposes, we map the physical coordinates to the canoncial coordinates $X \in [0, 1] $ and $Y \in [0, 1]$. Therefore, local basis functions on an element $k$ are defined for each node such that
+For a triangular finite element $k$, there are three nodes $k_1$, $k_2$ and $k_3$ and each of those nodes takes on a coordinate in the physical space $(x_{k_1}, y_{k_1}), (x_{k_2}, y_{k_2}), (x_{k_3}, y_{k_3})$. For integration purposes, we map the physical coordinates to the canoncial coordinates $X \in [0, 1]$ and $Y \in [0, 1]$. Therefore, local basis functions on an element $k$ are defined for each node such that
 
 $$
 \begin{aligned}
@@ -567,7 +567,7 @@ $$
 then one can substitute this into the weak form
 
 $$
-\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j + \phi_i \frac{\sum_{j=1}^{N_{nodes}} U_j^{(m)} \phi_j}{\Delta t}\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
+\int_{\Omega} \nabla \phi_i \cdot \sum_{j=1}^{N_{nodes}} U_j^{(m)} \nabla \phi_j + \frac{\phi_i}{\Delta t} \sum_{j=1}^{N_{nodes}} U_j^{(m)} \phi_j\ d\Omega = \int_{\Omega} vf + v \frac{U^{(m-1)}}{\Delta t}\ d\Omega
 $$
 
 and we leave $U^{(m-1)}$ as is, since this is a  vector with elements that are known from the previous iteration $m-1$ (or from initial conditions). Now the sum can actually be factored out, which I will show with a stripped down example below (which is just using distributive properties of dot products and commutativity of addition) just to convince the reader/author.
@@ -682,7 +682,7 @@ $$
 
 where $N_{ele}$ is the number of elements in the mesh, and $e_k$ is the region occupied by element $k$.
 
-However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{local}^{(k)}$, where $A_{local, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
+However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix $\mathbf{A}_{\text{local}}^{(k)}$, where $A_{\text{local}, i, j}^{(k)}$ contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for $\vec{b}_{local}^{(k)}$ where $b_{local, i}^{(k)}$ contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of $A_{local}^{(k)}$ for $i=1,2,3$ and $j=1,2,3$ is
 
 $$
 \begin{aligned}
