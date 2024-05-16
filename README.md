@@ -1089,3 +1089,5 @@ Decomposition -- A Tutorial with Exercises". CSC/NASA GSFC, Code 931.
 url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 
 [20] "PETSc for Partial Differential Equations Numerical Solutions in C and Python" (Buehler 2021)
+
+[21] "A CFD Tutorial in Julia: Introduction to Compressible Laminar Boundary-Layer Flows" (Oz 2021). url: https://doi.org/10.3390/fluids6110400
