@@ -397,6 +397,25 @@ $$
 
 which can be shown by applying the product rule for scalar and vector field to the left hand side of the equation.
 
+### Interpolating Functions (Polynomials) and Reference Elements
+
+Some of the discussion here is based on the code defining interpolating polynomials [here](https://github.com/Ferrite-FEM/Ferrite.jl/blob/7868110d15acf2189fd72ae06a9e46b3cadc550d/src/interpolations.jl#L329) from Ferrite.jl as well as the presentation in [22].
+
+The reference finite elemenet is taken to be in the domain $[-1, 1]^d$ for some $d$-dimensional element. In the 1D case, the reference coordinates (points) corresponding to this element are $\xi_0 = -1$ and $\xi_1 = 1$. These reference coordinates are used in the Lagrange shape functions for a node (reference coordinate) $k$ and order $m$ are defined as follows for some local coordinate $\xi$, the general form for which is defined below:
+
+$$
+L_{k}^{(m)} = \prod_{i=0,\ i \neq k}^{m} \frac{\xi - \xi_i}{\xi_k - \xi_i}.
+$$
+
+Since a 1D element will only have a single local coordinate on the $x$ axis, we are interested in the shape functions defined for such a local coordinate for each reference coordinate (node) $\xi_0$ and $\xi_1$. The shape functions are often denoted ${N_i(\xi_j) = \delta_{ij}}$ where $\delta_{ij}$ is the Kronecker delta. Since we know that ${i \in \{0, 1\}}$ (i.e., that the 1D element has only the reference coordinates $\xi_0$ and $\xi_1$), we define the shape functions below using the Lagrange shape function definition and also rewrite the result to a standard form:
+
+$$
+\begin{aligned}
+N_1 &= L_{0}^{(1)} = \frac{\xi_x - \xi_1}{\xi_0 - \xi_1} = \frac{\xi_x - 1}{-2} * \frac{-1}{-1} = \frac{1 - \xi_x}{2}, \\ 
+N_2 &= L_{1}^{(1)} = \frac{\xi_x - \xi_0}{\xi_1 - \xi_0} = \frac{\xi_x + 1}{2} = \frac{1 + \xi_x}{2}.
+\end{aligned}
+$$
+
 ### Parabolic Partial Differential Equation in 2D
 
 The following sections are based on chapters 3, 7, and 13 from [8].
@@ -682,35 +701,35 @@ $$
 
 where $N_{ele}$ is the number of elements in the mesh, and $e_k$ is the region occupied by element $k$.
 
-However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix 
+However, consider that we are evaluating the basis functions defined in [Mesh and Basis Functions](#mesh-and-basis-functions) at nodes $k_1$, $k_2$, and $k_3$, that we know nonzero contributions from this element on $e_k$ will only occur for $A_{ij}$ such that ${i, j \in {k_1, k_2, k_3}}$. Therefore, the nonzero local contributions can be stored in a $3 \times 3$ matrix
 
 $$
 \mathbf{A}_{local}^{(k)},
 $$
 
-where 
+where
 
 $$
 A_{local, i, j}^{(k)},
-$$ 
+$$
 
-contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for 
+contributes to $A_{k_i, k_j}$ for $i = 1,2,3$, $j = 1,2,3$. Similarly, we calculuate the local contributions for
 
 $$
 \vec{b}_{local}^{(k)},
-$$ 
+$$
 
-where 
+where
 
 $$
 b_{local, i}^{(k)}
-$$ 
+$$
 
-contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of 
+contributes to $b_{k_i}$ for $i = 1,2,3$. So the entries of
 
 $$
 A_{local}^{(k)},
-$$ 
+$$
 
 for $i=1,2,3$ and $j=1,2,3$ is
 
@@ -1091,3 +1110,5 @@ url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 [20] "PETSc for Partial Differential Equations Numerical Solutions in C and Python" (Buehler 2021)
 
 [21] "A CFD Tutorial in Julia: Introduction to Compressible Laminar Boundary-Layer Flows" (Oz 2021). url: https://doi.org/10.3390/fluids6110400
+
+[22] "Shape Functions Generations, Requirements". FEM PPTX by [Dr. Mashayekhi](https://mashayekhi.iut.ac.ir/) from Isfahan University of Technology. url: https://mashayekhi.iut.ac.ir/sites/mashayekhi.iut.ac.ir/files//files_course/lesson_12_5.pdf
