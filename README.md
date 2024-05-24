@@ -868,7 +868,11 @@ $$
 
 ## Domain Decomposition Methods
 
-Overarching questions/observations:
+The goal of domain decomposition methods (DDMs) is to decompose a discretized (finite element, finite difference) domain into overlapping or non-overlapping subdomains, static condensation (reductions of unknowns) in subdomain (local) problems using the previous iterations interface solutions $u_{\Gamma}$, assembling the interface solution for the current iteration, and then solvign the subdomain (local) problems to get the interior dofs $u_i$. See [23] for more basic details.
+
+![1716554420936](image/README/1716554420936.png)
+
+### Overarching Thoughts
 
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
 
@@ -1112,3 +1116,6 @@ url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 [21] "A CFD Tutorial in Julia: Introduction to Compressible Laminar Boundary-Layer Flows" (Oz 2021). url: https://doi.org/10.3390/fluids6110400
 
 [22] "Shape Functions Generations, Requirements". FEM PPTX by [Dr. Mashayekhi](https://mashayekhi.iut.ac.ir/) from Isfahan University of Technology. url: https://mashayekhi.iut.ac.ir/sites/mashayekhi.iut.ac.ir/files//files_course/lesson_12_5.pdf
+
+[23] Nikishkov. (2007). "Basics of the Domain Decomposition Method for Finite Element Analysis" in Mesh Partitioning Techniques and Domain.
+Decomposition Methods
