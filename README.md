@@ -872,6 +872,8 @@ The goal of domain decomposition methods (DDMs) is to decompose a discretized (f
 
 ![1716554420936](image/README/1716554420936.png)
 
+More specifically, for non-overlapping domain decomposition methods, the idea is that you want to solve the interface problem first and then solve the local problems in parallel. This is described [24].  
+
 ### Overarching Thoughts
 
 * How does a domain decomposition produce a preconditioner OR a solver for the (global) system of equations [pg. ix, 16]?
@@ -1119,3 +1121,6 @@ url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 
 [23] Nikishkov. (2007). "Basics of the Domain Decomposition Method for Finite Element Analysis" in Mesh Partitioning Techniques and Domain.
 Decomposition Methods
+
+[24] Sistek, J. and Oberhuber, T. Acceleration of a parallel BDDC solver by using graphics processing units on subdomains. The International Journal of High
+Performance Computing Applications. 2023; 37(2):151-164. 
