@@ -20,7 +20,7 @@ entries of `A` are the upper triangular matrix `U`.
 function lu_factorization!(A)
     m, n = size(A)
     for k = 1:n-1
-        A[k, k] == 0 && break
+        A[k, k] == 0 && break # diagonal entry is the pivot (Heath 2.4.4)
         for i = k+1:n
             multiplier =  A[i, k]/A[k, k]
             A[i, k] = multiplier 

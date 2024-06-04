@@ -872,7 +872,11 @@ The goal of domain decomposition methods (DDMs) is to decompose a discretized (f
 
 ![1716554420936](image/README/1716554420936.png)
 
-More specifically, for non-overlapping domain decomposition methods, the idea is that you want to solve the interface problem first and then solve the local problems in parallel. This is described [24].  
+More specifically, for non-overlapping domain decomposition methods, the idea is that you want to solve the interface problem first and then solve the local problems in parallel. This is described [24].
+
+According to [18], four different types of formulations (known as hybrid formulations) are available for domain decomposition methods: schwarz, schur complement, lagrange, and linear least square. The schur complement formulation uses a non-overlapping partition of a mesh, assembles finite element systems on each partition, and then iteratively/directly solves the Schur Complement system, which provides the interface solutions $u_B$ needed to solve the local problems. The iterative version of this algorithm 3.2.3 is shown below from [18].
+
+![1716730783896](image/README/1716730783896.png)
 
 ### Overarching Thoughts
 
@@ -1123,4 +1127,4 @@ url: https://edoras.sdsu.edu/~mthomas/docs/mpi/nasa.tutorial/mpi2.pdf
 Decomposition Methods
 
 [24] Sistek, J. and Oberhuber, T. Acceleration of a parallel BDDC solver by using graphics processing units on subdomains. The International Journal of High
-Performance Computing Applications. 2023; 37(2):151-164. 
+Performance Computing Applications. 2023; 37(2):151-164.
