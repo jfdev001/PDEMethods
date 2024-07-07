@@ -5,20 +5,43 @@
 """
     forward_euler_first_order_wave(
         scheme::Symbol = :backward; 
-        c = 1, xL = 0, xR = 1, nx = 5, tf = 10, Δt=0.05,
+        c = 1, xL = 0, xR = 1, nx = 8_000, tf = 2, Δt=0.0001,
         boundary::Symbol = :periodic)
 
 Uses the forward Euler method `y_{k+1} = y_k + Δt*f(t_k, y_k)` for time 
 integration along with spatial differencing scheme corresponding to `scheme` as 
-either `:backward` or `:forward` to solve the 1D wave equation.
+either `:backward` or `:forward` to solve the 1D wave equation. The default
+parameters lead to an example 1D diffusion equation that whose wave does
+has a limited decrease in height over time. Using a coarser grid leads to 
+problems here.
+
+TODO: Could stability analysis be used to determine minimum fineness of 
+grid needed for stable algorithm? Why are some grids stable and others are
+not? 
 
 ``
 u_t + c u_x = 0 
 ``
+
+# Examples
+```julia-repl
+julia> using PDEMethods: forward_euler_first_order_wave
+julia> using Plots 
+julia> u, x = forward_euler_first_order_wave()
+julia> anim = Animation()
+julia> for t in 1:size(u,1)÷100:size(u,1)
+           plot(x, u[t, :], color=:blue, legend=false, xlims=(x[begin], x[end]))
+           frame(anim)
+       end 
+julia> gif(anim, "assets/waves.gif", fps=15)
+```
+
+# References
+[1] : ["The First Order Wave Equation" in Solving PDEs](https://aquaulb.github.io/book_solving_pde_mooc/solving_pde_mooc/notebooks/04_PartialDifferentialEquations/04_01_Advection.html)
 """
 function forward_euler_first_order_wave(
     scheme::Symbol = :backward; 
-    c = 1, xL = 0, xR = 1, nx = 5, tf = 10, Δt=0.05,
+    c = 1, xL = 0, xR = 1, nx = 8_000, tf = 2, Δt=0.0001,
     boundary::Symbol = :periodic)
 
     # these functions only operate on the interior grid points since the 
