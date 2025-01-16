@@ -8,6 +8,8 @@ The rate of convergence of the Jacobi method is set by the ratefor the slowest-d
 
 ## Finite Difference Methods
 
+For a very lucid discussion of truncation error, see ref [25].
+
 ### Forward, Centered, Backward Finite Differences
 
 This section is based on chapter 8 of ref [1].
@@ -1128,3 +1130,5 @@ Decomposition Methods
 
 [24] Sistek, J. and Oberhuber, T. Acceleration of a parallel BDDC solver by using graphics processing units on subdomains. The International Journal of High
 Performance Computing Applications. 2023; 37(2):151-164.
+
+[25] Warner, T (2011). Chapter 3.4.1: Truncation Error in "Numerical Weather and Climate Prediction." Cambridge University Press.
