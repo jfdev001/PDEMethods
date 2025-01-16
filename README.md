@@ -10,6 +10,127 @@ The rate of convergence of the Jacobi method is set by the ratefor the slowest-d
 
 For a very lucid discussion of truncation error, see ref [25].
 
+<!--
+### **What is Truncation Error?**
+**Truncation error** is the error introduced in a numerical method due to the approximation of a mathematical process (e.g., solving a differential equation) by a discrete numerical algorithm.
+
+1. **Definition**:
+   - It arises because a numerical method replaces a continuous mathematical expression with a finite difference approximation.
+   - For example, when solving an ordinary differential equation (ODE) numerically, the exact derivative \( y'(t) \) is approximated by a difference formula like \((y_{n+1} - y_n) / h\), which is not exact.
+
+2. **Local Truncation Error (LTE)**:
+   - The error made in a single step of the numerical method.
+   - Example (Forward Euler):
+     \[
+     y(t_{n+1}) = y(t_n) + h f(t_n, y_n) + \text{LTE},
+     \]
+     where LTE is the error introduced at this single step.
+
+3. **Global Truncation Error (GTE)**:
+   - The accumulated error over all steps in the computation.
+   - It depends on the LTE and the number of steps taken.
+
+---
+
+### **How to Compute and Prove Truncation Error**
+#### **1. Deriving the Error Formula**
+   - To compute the truncation error, compare the exact continuous solution of the problem with its numerical approximation.
+
+   **Example: Forward Euler Method**
+   - Consider the ODE:
+     \[
+     y'(t) = f(t, y), \quad y(t_0) = y_0.
+     \]
+   - The Forward Euler formula is:
+     \[
+     y_{n+1} = y_n + h f(t_n, y_n).
+     \]
+   - Expand \( y(t_{n+1}) \) (the exact solution at \( t_{n+1} \)) using a Taylor series:
+     \[
+     y(t_{n+1}) = y(t_n) + h y'(t_n) + \frac{h^2}{2} y''(t_n) + O(h^3).
+     \]
+   - Substitute \( y'(t_n) = f(t_n, y_n) \):
+     \[
+     y(t_{n+1}) = y(t_n) + h f(t_n, y_n) + \frac{h^2}{2} y''(t_n) + O(h^3).
+     \]
+   - Compare this to the numerical approximation \( y_{n+1} = y_n + h f(t_n, y_n) \). The **local truncation error** is:
+     \[
+     \text{LTE} = \frac{h^2}{2} y''(t_n) + O(h^3).
+     \]
+
+#### **2. Order of a Method**
+   - A method is said to be of order \( p \) if the LTE is \( O(h^{p+1}) \).
+   - In the Forward Euler method, \( \text{LTE} = O(h^2) \), so it is **first-order accurate**.
+
+---
+
+#### **3. Practical Calculation of Truncation Error**
+   - **Local Truncation Error**:
+     - Derive the Taylor series expansion of the exact solution and subtract the numerical method's formula.
+   - **Global Truncation Error**:
+     - Sum the LTE over all steps:
+       \[
+       \text{GTE} = O(h^p) \quad \text{for a method of order } p.
+       \]
+     - For \( N \) steps, \( \text{GTE} = N \cdot \text{LTE} \approx \frac{T}{h} \cdot O(h^{p+1}) = O(h^p) \), where \( T \) is the total time span.
+
+---
+
+### **4. Numerical Verification**
+To verify truncation error:
+1. Solve the problem using different step sizes \( h_1, h_2, \dots \).
+2. Compute the numerical solution and compare it to a reference (exact or high-resolution) solution.
+3. Verify the error scaling:
+   - If the method is \( p \)-th order, the error should decrease proportionally to \( h^p \).
+
+#### **Example in Python**:
+```python
+import numpy as np
+
+# Define the ODE: y' = -y, y(0) = 1
+def f(t, y):
+    return -y
+
+# Forward Euler method
+def forward_euler(f, y0, t0, h, T):
+    steps = int(T / h)
+    t = t0
+    y = y0
+    results = [(t, y)]
+    for _ in range(steps):
+        y = y + h * f(t, y)
+        t += h
+        results.append((t, y))
+    return np.array(results)
+
+# Exact solution
+def exact_solution(t):
+    return np.exp(-t)
+
+# Parameters
+y0 = 1
+t0 = 0
+T = 5
+h_values = [0.5, 0.25, 0.125]  # Different step sizes
+
+# Compute errors
+for h in h_values:
+    results = forward_euler(f, y0, t0, h, T)
+    t_vals, y_vals = results[:, 0], results[:, 1]
+    exact_vals = exact_solution(t_vals)
+    error = np.abs(y_vals - exact_vals)
+    print(f"h = {h}, max error = {np.max(error)}")
+```
+
+---
+
+### **Key Takeaways**
+- **Truncation error** quantifies the inherent error in approximating derivatives and integrals numerically.
+- It can be computed by comparing Taylor series expansions of the exact solution with the numerical method.
+- The **order of the method** determines how fast the error decreases with the step size.
+- Verification of truncation error often involves numerical experiments with varying step sizes.
+-->
+
 ### Forward, Centered, Backward Finite Differences
 
 This section is based on chapter 8 of ref [1].
