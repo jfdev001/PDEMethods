@@ -1152,6 +1152,11 @@ $$
 0 \end{bmatrix}
 $$
 
+What are dual and primal cells? See https://pmc.ncbi.nlm.nih.gov/articles/PMC3185384/:
+
+![image](https://github.com/user-attachments/assets/df253502-d822-4a1d-8dc7-feda2fbaff89)
+
+
 ## Algebraic Multigrid
 
 Linear interpolation can best be described [here](https://math.stackexchange.com/questions/4902406/forming-a-matrix-i-e-linear-operator-based-on-implicit-description-of-coeffi/4902935#4902935).
